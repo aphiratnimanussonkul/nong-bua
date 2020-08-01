@@ -1,0 +1,40 @@
+@import "../../theme/variable.scss";
+.MuiAppBar-root {
+  background-color: var(--dark-green-black-primary) !important;
+  .MuiToolbar-root.navbar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px 5%;
+    h1 {
+      color: white;
+    }
+    p {
+      color: var(--green-emeral-primary);
+    }
+    h1,
+    p {
+      margin: 0;
+    }
+  }
+
+  .MuiToolbar-root.nav-menu-bar {
+    background-color: var(--green-lemon-second);
+    height: 48px;
+    .MuiTabs-root {
+      margin: auto;
+      .MuiButtonBase-root {
+        font-size: 1.1em;
+        font-weight: 700;
+      }
+      .MuiTabs-indicator {
+        height: 4px;
+        background-color: var(--green-yellow-bright-third);
+      }
+    }
+  }
+
+  .MuiToolbar-regular.nav-menu-bar {
+    min-height: 48px;
+  }
+}
