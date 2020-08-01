@@ -3,3 +3,6 @@
 
 ### Add Redux to your project
 >$ yarn add redux react-redux
+
+### Run Project
+>$ npm start
