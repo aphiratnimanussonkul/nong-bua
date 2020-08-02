@@ -14,7 +14,7 @@ import "./news-card.scss";
 
 const NewsCard = ({ detail }) => {
   return (
-    <Card>
+    <Card className="news-card">
       <CardActionArea>
         <CardMedia image={detail.image} />
         <CardContent>
