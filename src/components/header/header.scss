@@ -1,6 +1,9 @@
 @import "../../theme/variable.scss";
 .MuiAppBar-root {
   background-color: var(--dark-green-black-primary) !important;
+  position: fixed;
+  z-index: 9;
+  top: 0;
   .MuiToolbar-root.navbar {
     display: flex;
     flex-direction: column;
