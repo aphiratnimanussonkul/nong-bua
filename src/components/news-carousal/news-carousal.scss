@@ -1,0 +1,25 @@
+.MuiCardMedia-root {
+  height: 500px;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: flex-end;
+  div.news-title {
+    height: 100px;
+    background-color: rgba($color: #000000, $alpha: 0.5);
+    display: flex;
+    align-items: center;
+    h3 {
+      margin: 0;
+      color: white;
+    }
+    div.vertical-divider {
+      margin-left: 60px;
+      height: 80%;
+      width: 4px;
+      background-color: var(--green-yellow-bright-third);
+    }
+    * {
+      margin: 0 20px;
+    }
+  }
+}

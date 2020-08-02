@@ -1,9 +1,9 @@
 import React from "react";
-
+import NewsCarousal from '../news-carousal/news-carousal.js'
 const Home = ({}) => {
   return (
     <>
-      <p>This is Home Page</p>
+      <NewsCarousal></NewsCarousal>
     </>
   );
 };
