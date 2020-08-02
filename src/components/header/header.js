@@ -38,7 +38,7 @@ const Header = () => {
   };
   return (
     <>
-      <AppBar position="static">
+      <AppBar>
         <Toolbar className="navbar">
           <h1>หมู่บ้านหนองบัว</h1>
           <p>หมู่ที่ 25 ตำบลโบสถ์ อำเภอพิมาย จังหวัดนครราชสีมา</p>
