@@ -1,4 +1,4 @@
-import React, { useState, Component } from "react";
+import React, { useState } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Tabs from "@material-ui/core/Tabs";
@@ -31,7 +31,7 @@ const Header = () => {
       link: "/about-village",
     },
   ];
-  
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
     history.push(menus[newValue].link);
