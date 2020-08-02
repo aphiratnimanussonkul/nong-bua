@@ -1,0 +1,25 @@
+.directory-card.MuiCard-root {
+  margin: 8px;
+  width: 30%;
+  div.MuiCardContent-root {
+    display: flex;
+    padding: 8px 16px;
+    align-items: center;
+
+    div.personal-detial {
+      margin-left: 16px;
+      * {
+        margin: 0;
+      }
+
+      p {
+        color: var(--green-lemon-second);
+      }
+    }
+
+    div.MuiAvatar-root {
+      width: 100px;
+      height: 100px;
+    }
+  }
+}
