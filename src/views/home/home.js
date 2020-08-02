@@ -40,7 +40,7 @@ const Home = ({}) => {
       <div className="content">
         <AboutVillage></AboutVillage>
       </div>
-      <News news={news}></News>
+      <News news={news} toppick={"ข่าวและกิจกรรม"}></News>
     </>
   );
 };

@@ -31,7 +31,7 @@ const NewsInformation = ({}) => {
       created_at: "1 วันที่แล้ว",
     },
   ];
-  return <News news={news}></News>;
+  return <News news={news} toppick={"ข่าวและกิจกรรม"}></News>;
 };
 
 export default NewsInformation;
