@@ -132,6 +132,9 @@ const App = () => {
 export default withRouter(App);
 ```
 
+### Install caroural
+> \$ npm install react-material-ui-carousel --save
+
 ### Run Project
 
 > \$ npm start
