@@ -5,7 +5,7 @@ import { CardMedia, Typography } from "@material-ui/core";
 const AboutVillage = () => {
   return (
     <div className="about-village">
-      <h2>รู้จักบ้านหนองบัว</h2>
+      <h2 className="toppick">รู้จักบ้านหนองบัว</h2>
       <div className="detail">
         <CardMedia
           image={
