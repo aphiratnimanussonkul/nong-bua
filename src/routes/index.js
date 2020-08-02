@@ -1,6 +1,6 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import Home from "../components/home/home.js";
+import Home from "../views/home/home.js";
 import NewsInformation from "../components/news-information/news-information.js";
 
 const Routing = () => {
