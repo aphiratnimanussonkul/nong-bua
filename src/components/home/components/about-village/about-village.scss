@@ -1,0 +1,20 @@
+div.about-village {
+  h2 {
+    color: var(--green-emeral-primary);
+    margin: 0;
+  }
+  div.detail {
+    display: flex;
+    align-items: flex-start;
+    .MuiCardMedia-root {
+      width: 40%;
+      border-radius: 16px;
+    }
+    .MuiTypography-root {
+      padding-left: 32px;
+      text-indent: 16%;
+      width: 60%;
+      font-size: 1.3em;
+    }
+  }
+}
