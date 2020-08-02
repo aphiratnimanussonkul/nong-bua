@@ -1,27 +1,17 @@
 import React from "react";
-import {
-  Typography,
-  Button,
-  CardMedia,
-  CardContent,
-  CardActions,
-  CardActionArea,
-  Card,
-  GridList,
-} from "@material-ui/core";
+import { GridList } from "@material-ui/core";
 import "./news.scss";
 import NewsCard from "./components/news-card/news-card";
 
-const News = () => {
-  const cards = ["assas", "asd", "asdadasd", "asdF"];
-
+const News = ({ news }) => {
+  console.log(news);
   return (
     <div className="news">
       <div className="content">
         <h2 className="toppick">ข่าวและกิจกรรม</h2>
         <GridList>
-          {cards.map((card) => {
-            return <NewsCard></NewsCard>;
+          {news.map((detail) => {
+            return <NewsCard detail={detail}></NewsCard>;
           })}
         </GridList>
       </div>
