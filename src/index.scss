@@ -3,6 +3,10 @@ body {
   font-family: "Kanit", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  .MuiTypography-root,
+  .MuiButtonBase-root {
+    font-family: "Kanit", sans-serif;
+  }
 }
 
 code {
