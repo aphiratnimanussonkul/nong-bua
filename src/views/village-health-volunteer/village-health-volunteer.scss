@@ -1,0 +1,14 @@
+div.village-health-volunteer {
+  div.village-information {
+    .MuiIcon-root {
+      color: var(--green-lemon-second);
+    }
+
+    ul.MuiGridList-root.static-list {
+      margin-top: 16px !important;
+      > div {
+        margin: 8px
+      }
+    }
+  }
+}

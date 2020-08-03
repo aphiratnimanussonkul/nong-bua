@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router-dom";
 import Home from "../views/home/home.js";
 import NewsInformation from "../views/news-information/news-information.js";
 import VillageFund from "../views/village-fund/village-fund.js";
+import VillageHealthVolunteer from "../views/village-health-volunteer/village-health-volunteer.js";
 
 const Routing = () => {
   return (
@@ -10,6 +11,11 @@ const Routing = () => {
       <Route exact path="/" component={Home} />
       <Route exact path="/news-information" component={NewsInformation} />
       <Route exact path="/village-fund" component={VillageFund} />
+      <Route
+        exact
+        path="/village-health-volunteer"
+        component={VillageHealthVolunteer}
+      />
     </Switch>
   );
 };
