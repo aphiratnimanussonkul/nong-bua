@@ -4,6 +4,7 @@ import DirectoryCard from "../../components/directory-card/directory-card";
 import { GridList } from "@material-ui/core";
 
 import "./village-fund.scss";
+import ProjectCard from "./components/project-card/project-card";
 
 const VillageFund = () => {
   const news = [
@@ -39,7 +40,7 @@ const VillageFund = () => {
   return (
     <>
       <div className="directory">
-        <div className=" content">
+        <div className="content">
           <h2 className="toppick">ทำเนียบคณะกรรมการกองทุนหมู่บ้าน</h2>
           <GridList>
             <DirectoryCard></DirectoryCard>
@@ -48,8 +49,14 @@ const VillageFund = () => {
             <DirectoryCard></DirectoryCard>
           </GridList>
         </div>
-        <News news={news} toppick={"ข่าวและกิจกรรมของกองทุนหมู่บ้าน"}></News>
       </div>
+      <div className="project-list">
+        <div className="content">
+          <h2 className="toppick">โครงการของกองทุนหมู่บ้าน</h2>
+          <ProjectCard></ProjectCard>
+        </div>
+      </div>
+      <News news={news} toppick={"ข่าวและกิจกรรมของกองทุนหมู่บ้าน"}></News>
     </>
   );
 };
