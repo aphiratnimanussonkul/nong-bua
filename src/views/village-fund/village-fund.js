@@ -53,7 +53,11 @@ const VillageFund = () => {
       <div className="project-list">
         <div className="content">
           <h2 className="toppick">โครงการของกองทุนหมู่บ้าน</h2>
-          <ProjectCard></ProjectCard>
+          <ProjectCard projectName={"ธนาคารปุ๋ย"}></ProjectCard>
+          <ProjectCard projectName={"ธนาคารปุ๋ย"}></ProjectCard>
+          <ProjectCard projectName={"ธนาคารปุ๋ย"}></ProjectCard>
+          <ProjectCard projectName={"ธนาคารปุ๋ย"}></ProjectCard>
+          <ProjectCard projectName={"ธนาคารปุ๋ย"}></ProjectCard>
         </div>
       </div>
       <News news={news} toppick={"ข่าวและกิจกรรมของกองทุนหมู่บ้าน"}></News>
