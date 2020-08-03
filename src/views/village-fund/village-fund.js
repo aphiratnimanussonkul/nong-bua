@@ -1,10 +1,10 @@
 import React from "react";
 import News from "../../components/news/news";
 import DirectoryCard from "../../components/directory-card/directory-card";
+import ProjectCard from "./components/project-card/project-card";
 import { GridList } from "@material-ui/core";
 
 import "./village-fund.scss";
-import ProjectCard from "./components/project-card/project-card";
 
 const VillageFund = () => {
   const news = [
