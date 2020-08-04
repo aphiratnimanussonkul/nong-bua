@@ -133,8 +133,49 @@ export default withRouter(App);
 ```
 
 ### Install caroural
+
 > \$ npm install react-material-ui-carousel --save
 
 ### Run Project
 
 > \$ npm start
+
+### Deploy on Firebase hosting
+
+#### 1. Build your react project
+
+> \$ npm run build
+
+you will see folder build
+
+#### 2. Create Firebase project
+
+#### 3. Add this code inside <body> tag on index.html
+
+```html
+<script src="/__/firebase/7.17.1/firebase-app.js"></script>
+<script src="/__/firebase/init.js"></script>
+```
+
+#### 4. Install firebase tool
+
+> \$ npm install -g firebase-tools
+
+#### 5. Login Firebase
+
+> \$ firebase login
+
+#### 6. Init firebase service
+
+> \$ firebase init <br/>
+
+- choose service -> Firebase hosting
+- select existing project
+- What do you want to use your public directory => build
+  (from step 1)
+- Configure as a single app (rewrite all urls to /index.html)? No
+- File build/index.html already exists. Overwrite? No
+
+#### 7. Deploy
+
+> \$ firebase deploy --hosting
