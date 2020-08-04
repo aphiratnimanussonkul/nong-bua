@@ -1,0 +1,5 @@
+.about-village {
+  div.information-card:nth-child(odd) {
+    background-color: var(--light-gray);
+  }
+}
