@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import News from "../../components/news/news";
 import DirectoryCard from "../../components/directory-card/directory-card";
 import ProjectCard from "./components/project-card/project-card";
 import { GridList } from "@material-ui/core";
+import { connect } from "react-redux";
+
+import { getVillageFundDireactory } from "../../actions/village-fund";
 
 import "./village-fund.scss";
 
-const VillageFund = () => {
+const VillageFund = ({ dispatch, directory }) => {
+  useEffect(() => {
+    dispatch(getVillageFundDireactory());
+  }, [dispatch]);
+
   const news = [
     {
       title: "",
@@ -43,10 +50,9 @@ const VillageFund = () => {
         <div className="content">
           <h2 className="toppick">ทำเนียบคณะกรรมการกองทุนหมู่บ้าน</h2>
           <GridList>
-            <DirectoryCard></DirectoryCard>
-            <DirectoryCard></DirectoryCard>
-            <DirectoryCard></DirectoryCard>
-            <DirectoryCard></DirectoryCard>
+            {directory.map((directoryCard) => (
+              <DirectoryCard personalDetail={directoryCard}></DirectoryCard>
+            ))}
           </GridList>
         </div>
       </div>
@@ -64,4 +70,9 @@ const VillageFund = () => {
     </>
   );
 };
-export default VillageFund;
+
+const mapStateToProps = (state) => ({
+  directory: state.villageFund.directory,
+});
+
+export default connect(mapStateToProps)(VillageFund);
