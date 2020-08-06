@@ -4,7 +4,6 @@ import "./news.scss";
 import NewsCard from "./components/news-card/news-card";
 
 const News = ({ news, toppick }) => {
-  console.log(news);
   return (
     <div className="news">
       <div className="content">
