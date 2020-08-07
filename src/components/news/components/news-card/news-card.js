@@ -16,7 +16,7 @@ const NewsCard = ({ detail }) => {
   return (
     <Card className="news-card">
       <CardActionArea>
-        <CardMedia image={detail.image} />
+        <CardMedia image={detail.images[0]} />
         <CardContent>
           <div className="top-card-news">
             <div className="tags">
@@ -24,8 +24,8 @@ const NewsCard = ({ detail }) => {
                 return <Chip label={tag} size="small" className="chip" />;
               })}
             </div>
-            <Typography variant="subtitile2" className="how-long">
-              {detail.created_at}
+            <Typography variant="subtitle2" className="how-long">
+              {detail.createdAt.seconds}
             </Typography>
           </div>
           <Typography gutterBottom variant="h5" className="toppick">

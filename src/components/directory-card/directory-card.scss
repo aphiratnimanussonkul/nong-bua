@@ -1,7 +1,8 @@
 .directory-card.MuiCard-root {
   margin: 8px;
-  width: 30%;
   border-radius: 16px;
+  width: 30%;
+  min-width: 350px;  
   
   div.MuiCardContent-root {
     display: flex;

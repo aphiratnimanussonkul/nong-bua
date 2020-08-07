@@ -5,13 +5,19 @@ import ProjectCard from "./components/project-card/project-card";
 import { GridList } from "@material-ui/core";
 import { connect } from "react-redux";
 
-import { getVillageFundDireactory } from "../../actions/village-fund";
+import {
+  getVillageFundDireactory,
+  getVillageProject,
+  getVillageNewsInformation,
+} from "../../actions/village-fund";
 
 import "./village-fund.scss";
 
-const VillageFund = ({ dispatch, directory }) => {
+const VillageFund = ({ dispatch, directories, projects, newsInformation }) => {
   useEffect(() => {
     dispatch(getVillageFundDireactory());
+    dispatch(getVillageProject());
+    dispatch(getVillageNewsInformation());
   }, [dispatch]);
 
   const news = [
@@ -50,7 +56,7 @@ const VillageFund = ({ dispatch, directory }) => {
         <div className="content">
           <h2 className="toppick">ทำเนียบคณะกรรมการกองทุนหมู่บ้าน</h2>
           <GridList>
-            {directory.map((directoryCard) => (
+            {directories.map((directoryCard) => (
               <DirectoryCard personalDetail={directoryCard}></DirectoryCard>
             ))}
           </GridList>
@@ -59,20 +65,23 @@ const VillageFund = ({ dispatch, directory }) => {
       <div className="project-list">
         <div className="content">
           <h2 className="toppick">โครงการของกองทุนหมู่บ้าน</h2>
-          <ProjectCard projectName={"ธนาคารปุ๋ย"}></ProjectCard>
-          <ProjectCard projectName={"ธนาคารปุ๋ย"}></ProjectCard>
-          <ProjectCard projectName={"ธนาคารปุ๋ย"}></ProjectCard>
-          <ProjectCard projectName={"ธนาคารปุ๋ย"}></ProjectCard>
-          <ProjectCard projectName={"ธนาคารปุ๋ย"}></ProjectCard>
+          {projects.map((project) => (
+            <ProjectCard projectName={project.name}></ProjectCard>
+          ))}
         </div>
       </div>
-      <News news={news} toppick={"ข่าวและกิจกรรมของกองทุนหมู่บ้าน"}></News>
+      <News
+        news={newsInformation}
+        toppick={"ข่าวและกิจกรรมของกองทุนหมู่บ้าน"}
+      ></News>
     </>
   );
 };
 
 const mapStateToProps = (state) => ({
-  directory: state.villageFund.directory,
+  directories: state.villageFund.directories,
+  projects: state.villageFund.projects,
+  newsInformation: state.villageFund.newsInformation,
 });
 
 export default connect(mapStateToProps)(VillageFund);

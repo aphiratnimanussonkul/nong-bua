@@ -20,6 +20,9 @@
   }
 
   .MuiCardContent-root {
+    height: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     div.top-card-news {
       display: flex;
       align-items: baseline;
