@@ -6,17 +6,18 @@ import News from "../../components/news/news.js";
 
 import "./home.scss";
 
-import { getNews } from "../../actions/home";
+import { getNews, getVillageIntroduce } from "../../actions/home";
 
-const Home = ({ dispatch, news }) => {
+const Home = ({ dispatch, news, villageIntroduce }) => {
   useEffect(() => {
     dispatch(getNews());
+    dispatch(getVillageIntroduce());
   }, [dispatch]);
   return (
     <>
       <NewsCarousal recentlyNews={news.slice(0, 5)}></NewsCarousal>
       <div className="content">
-        <AboutVillage></AboutVillage>
+        <AboutVillage villageIntroduce={villageIntroduce}></AboutVillage>
       </div>
       <News news={news} toppick={"ข่าวและกิจกรรม"}></News>
     </>
@@ -25,6 +26,7 @@ const Home = ({ dispatch, news }) => {
 
 const mapStateToProps = (state) => ({
   news: state.home.news,
+  villageIntroduce: state.home.villageIntroduce,
 });
 
 export default connect(mapStateToProps)(Home);
