@@ -5,12 +5,16 @@ import { GridList } from "@material-ui/core";
 import "./village-health-volunteer.scss";
 import DirectoryCard from "../../components/directory-card/directory-card";
 import StaticCard from "./components/static-card/static-card";
-import { getVillageHealthVolunteerNews } from "../../actions/village-health-volunteer";
+import {
+  getVillageHealthVolunteerNews,
+  getVillageHealthVolunteerDirectory,
+} from "../../actions/village-health-volunteer";
 import { connect } from "react-redux";
 
-const VillageHealthVolunteer = ({ dispatch, news }) => {
+const VillageHealthVolunteer = ({ dispatch, news, directories }) => {
   useEffect(() => {
     dispatch(getVillageHealthVolunteerNews());
+    dispatch(getVillageHealthVolunteerDirectory());
   }, [dispatch]);
 
   return (
@@ -20,12 +24,11 @@ const VillageHealthVolunteer = ({ dispatch, news }) => {
           <h2 className="toppick">
             ทำเนียบอาสาสมัคร สาธารณสุขประจำหมู่บ้าน บ้านหนองบัว
           </h2>
-          {/* <GridList>
-            <DirectoryCard></DirectoryCard>
-            <DirectoryCard></DirectoryCard>
-            <DirectoryCard></DirectoryCard>
-            <DirectoryCard></DirectoryCard>
-          </GridList> */}
+          <GridList>
+            {directories.map((directory) => (
+              <DirectoryCard personalDetail={directory}></DirectoryCard>
+            ))}
+          </GridList>
         </div>
       </div>
       <div className="village-information">
@@ -75,6 +78,7 @@ const VillageHealthVolunteer = ({ dispatch, news }) => {
 
 const mapStateToProps = (state) => ({
   news: state.villageHealthVolunteer.news,
+  directories: state.villageHealthVolunteer.directories,
 });
 
 export default connect(mapStateToProps)(VillageHealthVolunteer);

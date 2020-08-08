@@ -6,6 +6,9 @@ const { firestore } = firebase;
 export const FETCH_VILLAGE_HEALTH_VOLUNTEER_NEWS = createActionSet(
   "FETCH_VILLAGE_HEALTH_VOLUNTEER_NEWS"
 );
+export const FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORT = createActionSet(
+  "FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORT"
+);
 
 export const getVillageHealthVolunteerNews = () => async (dispatch) => {
   dispatch({ type: FETCH_VILLAGE_HEALTH_VOLUNTEER_NEWS.PENDDING });
@@ -27,5 +30,24 @@ export const getVillageHealthVolunteerNews = () => async (dispatch) => {
       });
   } catch (error) {
     dispatch({ type: FETCH_VILLAGE_HEALTH_VOLUNTEER_NEWS.FAILED });
+  }
+};
+
+export const getVillageHealthVolunteerDirectory = () => async (dispatch) => {
+  dispatch({ type: FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORT.PENDDING });
+
+  try {
+    await firestore
+      .collection("village-health-volunteer-directory")
+      .orderBy("priority", "asc")
+      .get()
+      .then((result) => {
+        dispatch({
+          type: FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORT.SUCCESS,
+          payload: result.docs.map((data) => data.data()),
+        });
+      });
+  } catch (error) {
+    dispatch({ type: FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORT.FAILED });
   }
 };
