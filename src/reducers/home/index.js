@@ -12,9 +12,7 @@ export const initState = {
 export default (state = initState, { type, payload, error }) => {
   switch (type) {
     case (FETCH_NEWS_INFORMATION.PENDDING, FETCH_VILLAGE_INTRODUCE.PENDDING):
-      return {
-        ...state,
-      };
+      return state;
     case FETCH_NEWS_INFORMATION.SUCCESS:
       return {
         ...state,

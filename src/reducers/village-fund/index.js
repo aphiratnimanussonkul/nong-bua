@@ -16,9 +16,7 @@ export default (state = initState, { type, payload, error }) => {
     case (FETCH_VIILAGE_FUND_DIRECTORY.PENDDING,
     FETCH_VIILAGE_PROJECT.PENDDING,
     FETCH_VIILAGE_NEWS_INFORMATION.PENDDING):
-      return {
-        ...state,
-      };
+      return state;
     case FETCH_VIILAGE_FUND_DIRECTORY.SUCCESS:
       return {
         ...state,
