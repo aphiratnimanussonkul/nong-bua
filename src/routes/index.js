@@ -5,6 +5,7 @@ import NewsInformation from "../views/news-information/news-information.js";
 import VillageFund from "../views/village-fund/village-fund.js";
 import VillageHealthVolunteer from "../views/village-health-volunteer/village-health-volunteer.js";
 import AboutVillage from "../views/about-village/about-village.js";
+import ReadNews from "../views/read-news/read-news.js";
 
 const Routing = () => {
   return (
@@ -18,6 +19,7 @@ const Routing = () => {
         component={VillageHealthVolunteer}
       />
       <Route exact path="/about-village" component={AboutVillage} />
+      <Route exact path="/read-news/:id" component={ReadNews} />
     </Switch>
   );
 };
