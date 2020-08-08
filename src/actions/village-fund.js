@@ -61,12 +61,15 @@ export const getVillageNewsInformation = () => async (dispatch) => {
     await firestore
       .collection("news-information")
       .where("tags", "array-contains", "กองทุนหมู่บ้าน")
-      .orderBy("createdAt", "desc")
       .get()
       .then((result) => {
         dispatch({
           type: FETCH_VIILAGE_NEWS_INFORMATION.SUCCESS,
-          payload: result.docs.map((data) => data.data()),
+          payload: result.docs
+            .map((data) => data.data())
+            .sort(
+              (prev, cur) => cur.createdAt.seconds - prev.createdAt.seconds
+            ),
         });
       });
   } catch (error) {
