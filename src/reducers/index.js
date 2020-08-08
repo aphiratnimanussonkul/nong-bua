@@ -5,6 +5,7 @@ import { reducer as form } from "redux-form";
 import villageFund from "./village-fund/index";
 import home from "./home/index";
 import aboutVillage from "./about-village/index";
+import villageHealthVolunteer from "./village-health-volunteer/index";
 
 export default (history) =>
   combineReducers({
@@ -13,4 +14,5 @@ export default (history) =>
     villageFund,
     home,
     aboutVillage,
+    villageHealthVolunteer,
   });
