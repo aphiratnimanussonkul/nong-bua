@@ -61,6 +61,7 @@ export const getVillageNewsInformation = () => async (dispatch) => {
     await firestore
       .collection("news-information")
       .where("tags", "array-contains", "กองทุนหมู่บ้าน")
+      .orderBy("createdAt", "desc")
       .get()
       .then((result) => {
         dispatch({
