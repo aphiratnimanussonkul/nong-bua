@@ -12,8 +12,8 @@ const StaticCard = ({ staticData }) => {
         ) : (
           <img src={staticData.iconUrl} />
         )}
-        <h1>{staticData.amount}</h1>
-        <h4>{staticData.unit}</h4>
+        <h1>{staticData?.amount}</h1>
+        <h4>{staticData?.unit}</h4>
       </CardContent>
     </Card>
   );
