@@ -17,13 +17,16 @@ import "./news-card.scss";
 
 const NewsCard = ({ detail }) => {
   const history = useHistory();
-
+  const isMobile = navigator.userAgent.includes("Mobile");
   const readNews = (newsId) => {
     history.push(`/read-news/${newsId}`);
   };
 
   return (
-    <Card className="news-card" onClick={() => readNews(detail.id)}>
+    <Card
+      className={isMobile ? "news-card mobile" : "news-card"}
+      onClick={() => readNews(detail.id)}
+    >
       <CardActionArea>
         <CardMedia image={detail.images[0]} />
         <CardContent>

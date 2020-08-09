@@ -1,7 +1,10 @@
 .news-card.MuiPaper-rounded {
   border-radius: 16px;
 }
-
+.news-card.MuiCard-root.mobile {
+  width: 100%;
+  min-width: 0;
+}
 .news-card.MuiCard-root {
   width: 30%;
   height: 100%;
@@ -23,16 +26,19 @@
     height: 150px;
     overflow: hidden;
     text-overflow: ellipsis;
+    
     div.top-card-news {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
+
       div.tags {
         width: 80%;
         display: flex;
         flex-wrap: wrap;
       }
       .how-long {
+        min-width: 120px;
         text-align: right;
         color: var(--gray);
       }
