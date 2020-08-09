@@ -9,6 +9,7 @@ import MapIcon from "@material-ui/icons/Map";
 import "./footer.scss";
 import { Tooltip } from "@material-ui/core";
 export default function Footer() {
+  const isMobile = navigator.userAgent.includes("Mobile");
   const handleActionClick = (menu) => {
     switch (menu) {
       case "GOOGLE_MAP":
@@ -35,7 +36,7 @@ export default function Footer() {
       <div className="footer">
         <h1>ติดต่อเรา</h1>
         <div className="line"></div>
-        <div className="contacts">
+        <div className={isMobile ? "contacts mobile" : "contacts"}>
           <div className="contact-detail">
             <PhoneIcon></PhoneIcon>
             <p>08-0166-9415</p>
@@ -43,7 +44,15 @@ export default function Footer() {
           <div className="contact-detail">
             <RoomIcon></RoomIcon>
             <p>
-              หมู่ที่ 25 ตำโบสถ์ <span>อำเภอพิมาย จังหวัดนครราชสีมา </span>
+              หมู่ที่ 25 ตำโบสถ์{" "}
+              {isMobile ? (
+                <>
+                  <span>อำเภอพิมาย </span>
+                  <span> จังหวัดนครราชสีมา </span>
+                </>
+              ) : (
+                <span>อำเภอพิมาย จังหวัดนครราชสีมา </span>
+              )}
               <span>30110</span>
             </p>
           </div>
@@ -56,7 +65,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="line"></div>
-        <div className="copyright">
+        <div className={isMobile ? "copyright mobile" : "copyright"}>
           <CopyrightIcon />
           <h2>Aphirat Nimanussonkul</h2>
           <Tooltip

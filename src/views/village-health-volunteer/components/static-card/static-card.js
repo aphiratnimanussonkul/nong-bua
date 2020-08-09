@@ -4,8 +4,9 @@ import "./static-card.scss";
 import { Card, CardContent, Icon } from "@material-ui/core";
 
 const StaticCard = ({ staticData }) => {
+  const isMobile = navigator.userAgent.includes("Mobile");
   return (
-    <Card className="static-card">
+    <Card className={isMobile ? "static-card mobile" : "static-card"}>
       <CardContent>
         {staticData.iconName ? (
           <Icon>{staticData.iconName}</Icon>
