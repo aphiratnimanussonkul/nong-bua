@@ -1,13 +1,25 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
+
 import Carousel from "react-material-ui-carousel";
 import { CardMedia, Chip, Typography, GridList } from "@material-ui/core";
 import NewsCard from "../../components/news/components/news-card/news-card";
+
 import { getNewsById } from "../../actions/read-news";
 
 import "./read-news.scss";
 
 const ReadNews = ({ dispatch, news, newsRelate, newsId }) => {
+  const history = useHistory();
+  history.listen((location) => {
+    if (
+      location.pathname.includes("/read-news/") &&
+      !location.pathname.includes(newsId)
+    ) {
+      dispatch(getNewsById(location.pathname.split("/")[2]));
+    }
+  });
   useEffect(() => {
     dispatch(getNewsById(newsId));
   }, [dispatch]);

@@ -11,10 +11,17 @@ import {
   Divider,
 } from "@material-ui/core";
 import "./news-card.scss";
+import { useHistory, withRouter } from "react-router-dom";
 
 const NewsCard = ({ detail }) => {
+  const history = useHistory();
+
+  const readNews = (newsId) => {
+    history.push(`/read-news/${newsId}`);
+  };
+
   return (
-    <Card className="news-card">
+    <Card className="news-card" onClick={() => readNews(detail.id)}>
       <CardActionArea>
         <CardMedia image={detail.images[0]} />
         <CardContent>
@@ -46,4 +53,4 @@ const NewsCard = ({ detail }) => {
   );
 };
 
-export default NewsCard;
+export default withRouter(NewsCard);

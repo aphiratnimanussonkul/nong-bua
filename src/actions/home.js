@@ -19,7 +19,12 @@ export const getNews = () => async (dispatch) => {
       .then((result) => {
         dispatch({
           type: FETCH_NEWS_INFORMATION.SUCCESS,
-          payload: result.docs.map((data) => data.data()),
+          payload: result.docs.map((data) => {
+            return {
+              id: data.id,
+              ...data.data(),
+            };
+          }),
         });
       });
   } catch (error) {

@@ -8,7 +8,6 @@ export const FETCH_NEWS_RELATE = createActionSet("FETCH_NEWS_RELATE");
 
 export const getNewsById = (newsId) => async (dispatch) => {
   dispatch({ type: FETCH_NEWS_BY_ID.PENDDING });
-
   try {
     await firestore
       .collection("news-information")
@@ -19,10 +18,15 @@ export const getNewsById = (newsId) => async (dispatch) => {
         dispatch({
           type: FETCH_NEWS_BY_ID.SUCCESS,
           payload: {
-            news: result.data(),
+            news: { id: result.id, ...result.data() },
             newsRelate: newsRelate.docs
               .filter((doc) => doc.id !== newsId)
-              .map((data) => data.data()),
+              .map((data) => {
+                return {
+                  id: data.id,
+                  ...data.data(),
+                };
+              }),
           },
         });
       });

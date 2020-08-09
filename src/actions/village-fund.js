@@ -66,7 +66,12 @@ export const getVillageNewsInformation = () => async (dispatch) => {
         dispatch({
           type: FETCH_VIILAGE_NEWS_INFORMATION.SUCCESS,
           payload: result.docs
-            .map((data) => data.data())
+            .map((data) => {
+              return {
+                id: data.id,
+                ...data.data(),
+              };
+            })
             .sort(
               (prev, cur) => cur.createdAt.seconds - prev.createdAt.seconds
             ),

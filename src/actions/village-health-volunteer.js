@@ -23,7 +23,12 @@ export const getVillageHealthVolunteerNews = () => async (dispatch) => {
         dispatch({
           type: FETCH_VILLAGE_HEALTH_VOLUNTEER_NEWS.SUCCESS,
           payload: result.docs
-            .map((data) => data.data())
+            .map((data) => {
+              return {
+                id: data.id,
+                ...data.data(),
+              };
+            })
             .sort(
               (prev, cur) => cur.createdAt.seconds - prev.createdAt.seconds
             ),
