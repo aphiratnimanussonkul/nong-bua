@@ -34,9 +34,44 @@
         background-color: var(--green-yellow-bright-third);
       }
     }
+
+    .MuiIconButton-root {
+      color: white;
+    }
   }
 
   .MuiToolbar-regular.nav-menu-bar {
     min-height: 48px;
+  }
+}
+
+div.MuiDrawer-root {
+  div.MuiPaper-root.MuiDrawer-paper {
+    width: 80%;
+    background-color: #2a2a2a;
+
+    ul.MuiList-root {
+      color: white;
+
+      div.list {
+        display: flex;
+        flex-direction: row;
+        div.MuiButtonBase-root {
+          div.MuiListItemText-root {
+            span.MuiTypography-root {
+              font-size: 1.8em;
+            }
+          }
+        }
+        div.MuiButtonBase-root.active {
+          width: 100%;
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+        div.active {
+          background-color: var(--green-yellow-bright-third);
+          width: 4px;
+        }
+      }
+    }
   }
 }

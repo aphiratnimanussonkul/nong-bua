@@ -1,14 +1,25 @@
 import React, { useState } from "react";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
 import { withRouter, useHistory } from "react-router-dom";
+import MenuIcon from "@material-ui/icons/Menu";
+import {
+  IconButton,
+  Toolbar,
+  AppBar,
+  Tabs,
+  Tab,
+  SwipeableDrawer,
+  ListItem,
+  List,
+  ListItemText,
+  Divider,
+} from "@material-ui/core";
 import "./header.scss";
 
 const Header = () => {
+  const isMobile = navigator.userAgent.includes("Mobile");
   const history = useHistory();
   const [value, setValue] = useState(0);
+  const [sideMenu, setSideMenu] = useState(false);
   const menus = [
     {
       label: "หน้าแรก",
@@ -36,6 +47,8 @@ const Header = () => {
     setValue(newValue);
     history.push(menus[newValue].link);
   };
+
+
   return (
     <>
       <AppBar>
@@ -44,12 +57,53 @@ const Header = () => {
           <p>หมู่ที่ 25 ตำบลโบสถ์ อำเภอพิมาย จังหวัดนครราชสีมา</p>
         </Toolbar>
         <Toolbar className="nav-menu-bar">
-          <Tabs value={value} onChange={handleChange}>
-            {menus.map((menu) => {
-              return <Tab label={menu.label} />;
-            })}
-          </Tabs>
+          {isMobile ? (
+            <IconButton
+              aria-label="Menu"
+              component="span"
+              onClick={() => setSideMenu(true)}
+            >
+              <MenuIcon />
+            </IconButton>
+          ) : (
+            <Tabs value={value} onChange={handleChange}>
+              {menus.map((menu) => {
+                return <Tab label={menu.label} />;
+              })}
+            </Tabs>
+          )}
         </Toolbar>
+        <SwipeableDrawer
+          anchor="left"
+          open={sideMenu}
+          onClose={() => setSideMenu(false)}
+          onOpen={() => setSideMenu(true)}
+        >
+          <div
+            role="presentation"
+            onClick={() => setSideMenu(false)}
+            onKeyDown={() => setSideMenu(false)}
+          >
+            <List>
+              {menus.map((menu, index) => (
+                <>
+                  <div className="list">
+                    <ListItem
+                      onClick={(event) => handleChange(event, index)}
+                      className={value === index ? "active" : null}
+                      button
+                      key={menu.label}
+                    >
+                      <ListItemText primary={menu.label} />
+                    </ListItem>
+                    {value === index ? <div className="active"></div> : null}
+                  </div>
+                  <Divider />
+                </>
+              ))}
+            </List>
+          </div>
+        </SwipeableDrawer>
       </AppBar>
     </>
   );
