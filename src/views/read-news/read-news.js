@@ -7,6 +7,7 @@ import { CardMedia, Chip, Typography, GridList } from "@material-ui/core";
 import NewsCard from "../../components/news/components/news-card/news-card";
 
 import { getNewsById } from "../../actions/read-news";
+import { convertHowLong } from "../../helpers/convert-how-long/index";
 
 import "./read-news.scss";
 
@@ -44,7 +45,7 @@ const ReadNews = ({ dispatch, news, newsRelate, newsId }) => {
               })}
             </div>
             <Typography variant="subtitle2" className="how-long">
-              {news?.createdAt.seconds}
+              {convertHowLong(news?.createdAt.seconds)}
             </Typography>
           </div>
           <Typography variant="h6" color="textSecondary">

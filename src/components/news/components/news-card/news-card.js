@@ -10,8 +10,10 @@ import {
   Chip,
   Divider,
 } from "@material-ui/core";
-import "./news-card.scss";
 import { useHistory, withRouter } from "react-router-dom";
+import { convertHowLong } from "../../../../helpers/convert-how-long/index";
+
+import "./news-card.scss";
 
 const NewsCard = ({ detail }) => {
   const history = useHistory();
@@ -32,7 +34,7 @@ const NewsCard = ({ detail }) => {
               })}
             </div>
             <Typography variant="subtitle2" className="how-long">
-              {detail.createdAt.seconds}
+              {convertHowLong(detail.createdAt.seconds)}
             </Typography>
           </div>
           <Typography gutterBottom variant="h5" className="toppick">
