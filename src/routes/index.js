@@ -19,7 +19,7 @@ const Routing = () => {
         component={VillageHealthVolunteer}
       />
       <Route exact path="/about-village" component={AboutVillage} />
-      <Route exact path="/read-news/:id" component={ReadNews} />
+      <Route exact path="/news-information/:id" component={ReadNews} />
     </Switch>
   );
 };

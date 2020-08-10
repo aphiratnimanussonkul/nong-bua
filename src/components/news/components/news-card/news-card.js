@@ -19,7 +19,7 @@ const NewsCard = ({ detail }) => {
   const history = useHistory();
   const isMobile = navigator.userAgent.includes("Mobile");
   const readNews = (newsId) => {
-    history.push(`/read-news/${newsId}`);
+    history.push(`/news-information/${newsId}`);
   };
 
   return (

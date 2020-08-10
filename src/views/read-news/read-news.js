@@ -15,7 +15,7 @@ const ReadNews = ({ dispatch, news, newsRelate, newsId }) => {
   const history = useHistory();
   history.listen((location) => {
     if (
-      location.pathname.includes("/read-news/") &&
+      location.pathname.includes("/news-information/") &&
       !location.pathname.includes(newsId)
     ) {
       dispatch(getNewsById(location.pathname.split("/")[2]));

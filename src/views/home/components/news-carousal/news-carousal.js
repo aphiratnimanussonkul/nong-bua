@@ -8,7 +8,7 @@ import "./news-carousal.scss";
 const NewsCarousal = ({ recentlyNews }) => {
   const history = useHistory();
   const readNews = (newsId) => {
-    history.push(`/read-news/${newsId}`);
+    history.push(`/news-information/${newsId}`);
   };
   return (
     <Carousel>
