@@ -18,7 +18,6 @@ import "./header.scss";
 const Header = () => {
   const isMobile = navigator.userAgent.includes("Mobile");
   const history = useHistory();
-  const [value, setValue] = useState(0);
   const [sideMenu, setSideMenu] = useState(false);
   const menus = [
     {
@@ -43,11 +42,19 @@ const Header = () => {
     },
   ];
 
+  const currentTabMenu = () => {
+    return menus.findIndex((menu) => {
+      const path = history.location.pathname.split("/")[1];
+      return menu.link.includes(path);
+    });
+  };
+
+  const [value, setValue] = useState(currentTabMenu());
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
     history.push(menus[newValue].link);
   };
-
 
   return (
     <>
