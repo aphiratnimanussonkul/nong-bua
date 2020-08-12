@@ -11,7 +11,7 @@ const StaticCard = ({ staticData }) => {
         {staticData.iconName ? (
           <Icon>{staticData.iconName}</Icon>
         ) : (
-          <img src={staticData.iconUrl} />
+          <img src={staticData.iconUrl} alt="" />
         )}
         <h1>{staticData?.amount}</h1>
         <h4>{staticData?.unit}</h4>
