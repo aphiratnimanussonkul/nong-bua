@@ -7,6 +7,7 @@ import home from "./home/index";
 import aboutVillage from "./about-village/index";
 import villageHealthVolunteer from "./village-health-volunteer/index";
 import readNews from "./read-news/index";
+import userRole from './user-role/index'
 
 export default (history) =>
   combineReducers({
@@ -17,4 +18,5 @@ export default (history) =>
     aboutVillage,
     villageHealthVolunteer,
     readNews,
+    userRole,
   });

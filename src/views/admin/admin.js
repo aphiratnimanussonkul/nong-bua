@@ -6,7 +6,6 @@ import SideNav from "../../components/side-nav/side-nav";
 const Admin = () => {
   return (
     <>
-      
       <SideNav></SideNav>
       <div>this is admin</div>
     </>
