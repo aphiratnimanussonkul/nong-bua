@@ -56,8 +56,11 @@ const VillageFund = ({ dispatch, directories, projects, newsInformation }) => {
         <div className="content">
           <h2 className="toppick">ทำเนียบคณะกรรมการกองทุนหมู่บ้าน</h2>
           <GridList>
-            {directories.map((directoryCard) => (
-              <DirectoryCard personalDetail={directoryCard}></DirectoryCard>
+            {directories.map((directoryCard, index) => (
+              <DirectoryCard
+                personalDetail={directoryCard}
+                key={index}
+              ></DirectoryCard>
             ))}
           </GridList>
         </div>
@@ -65,8 +68,8 @@ const VillageFund = ({ dispatch, directories, projects, newsInformation }) => {
       <div className="project-list">
         <div className="content">
           <h2 className="toppick">โครงการของกองทุนหมู่บ้าน</h2>
-          {projects.map((project) => (
-            <ProjectCard projectName={project.name}></ProjectCard>
+          {projects.map((project, index) => (
+            <ProjectCard projectName={project.name} key={index}></ProjectCard>
           ))}
         </div>
       </div>

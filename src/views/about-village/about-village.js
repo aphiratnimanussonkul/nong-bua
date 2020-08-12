@@ -12,8 +12,8 @@ const AboutVillage = ({ dispatch, aboutVillages }) => {
 
   return (
     <div className="about-village">
-      {aboutVillages.map((aboutVillage) => {
-        return <InformationCard information={aboutVillage}></InformationCard>;
+      {aboutVillages.map((aboutVillage, index) => {
+        return <InformationCard information={aboutVillage} key={index}></InformationCard>;
       })}
     </div>
   );

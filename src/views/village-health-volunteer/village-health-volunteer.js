@@ -32,8 +32,11 @@ const VillageHealthVolunteer = ({
             ทำเนียบอาสาสมัคร สาธารณสุขประจำหมู่บ้าน บ้านหนองบัว
           </h2>
           <GridList>
-            {directories.map((directory) => (
-              <DirectoryCard personalDetail={directory}></DirectoryCard>
+            {directories.map((directory, index) => (
+              <DirectoryCard
+                personalDetail={directory}
+                key={index}
+              ></DirectoryCard>
             ))}
           </GridList>
         </div>
@@ -42,8 +45,8 @@ const VillageHealthVolunteer = ({
         <div className="content">
           <h2 className="toppick">ข้อมูลสาธารณสุขทั่วไปของหมู่บ้าน</h2>
           <GridList className="static-list">
-            {villageStatics.map((staticData) => (
-              <StaticCard staticData={staticData}></StaticCard>
+            {villageStatics.map((staticData, index) => (
+              <StaticCard staticData={staticData} key={index}></StaticCard>
             ))}
           </GridList>
         </div>

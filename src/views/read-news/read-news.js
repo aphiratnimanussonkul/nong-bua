@@ -32,16 +32,18 @@ const ReadNews = ({ dispatch, news, newsRelate, newsId }) => {
           <h2 className="toppick">{news?.title}</h2>
           {news?.images.length ? (
             <Carousel>
-              {news?.images.map((image) => (
-                <CardMedia image={image}></CardMedia>
+              {news?.images.map((image, index) => (
+                <CardMedia image={image} key={index}></CardMedia>
               ))}
             </Carousel>
           ) : null}
 
           <div className="top-card-news">
             <div className="tags">
-              {news?.tags.map((tag) => {
-                return <Chip label={tag} size="small" className="chip" />;
+              {news?.tags.map((tag, index) => {
+                return (
+                  <Chip label={tag} key={index} size="small" className="chip" />
+                );
               })}
             </div>
             <Typography variant="subtitle2" className="how-long">
@@ -56,7 +58,7 @@ const ReadNews = ({ dispatch, news, newsRelate, newsId }) => {
           <h2 className="toppick">ข่าวและกิจกรรมที่เกี่ยวข้อง</h2>
           <GridList>
             {newsRelate.map((detail) => {
-              return <NewsCard detail={detail}></NewsCard>;
+              return <NewsCard detail={detail} key={detail.id}></NewsCard>;
             })}
           </GridList>
         </div>

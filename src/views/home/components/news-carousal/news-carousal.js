@@ -13,7 +13,11 @@ const NewsCarousal = ({ recentlyNews }) => {
   return (
     <Carousel>
       {recentlyNews.map((item) => (
-        <CardMedia image={item.images[0]} onClick={() => readNews(item.id)}>
+        <CardMedia
+          image={item.images[0]}
+          key={item.id}
+          onClick={() => readNews(item.id)}
+        >
           <div className="news-title">
             <div className="vertical-divider"></div>
             <h3>{item.title}</h3>

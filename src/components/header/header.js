@@ -75,7 +75,7 @@ const Header = () => {
           ) : (
             <Tabs value={value} onChange={handleChange}>
               {menus.map((menu) => {
-                return <Tab label={menu.label} />;
+                return <Tab label={menu.label}  key={menu.label}/>;
               })}
             </Tabs>
           )}

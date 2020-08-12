@@ -32,8 +32,10 @@ const NewsCard = ({ detail }) => {
         <CardContent>
           <div className="top-card-news">
             <div className="tags">
-              {detail.tags.map((tag) => {
-                return <Chip label={tag} size="small" className="chip" />;
+              {detail.tags.map((tag, index) => {
+                return (
+                  <Chip label={tag} size="small" className="chip" key={index} />
+                );
               })}
             </div>
             <Typography variant="subtitle2" className="how-long">

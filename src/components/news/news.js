@@ -10,7 +10,7 @@ const News = ({ news, toppick }) => {
         <h2 className="toppick">{toppick}</h2>
         <GridList>
           {news.map((detail) => {
-            return <NewsCard detail={detail}></NewsCard>;
+            return <NewsCard detail={detail} key={detail.id}></NewsCard>;
           })}
         </GridList>
       </div>
