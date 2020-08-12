@@ -1,0 +1,122 @@
+div.news-manage {
+  background-color: white;
+  border-radius: 32px;
+  padding: 32px;
+
+  div.row.action-button {
+    margin-top: 16px;
+    justify-content: flex-end;
+    button.brown-yellow-outlined-button {
+      margin-right: 8px;
+    }
+  }
+
+  div.row {
+    div.col {
+      h3 {
+        margin-bottom: 8px;
+      }
+    }
+    div.col.images-selected {
+      width: 70%;
+      margin-left: 8px;
+      ul.MuiGridList-root {
+        padding: 8px;
+        border-radius: 8px;
+        height: 184px;
+        border: 1px solid var(--gray);
+
+        div.MuiCardMedia-root {
+          margin-top: 8px;
+          margin-right: 16px;
+          border-radius: 8px;
+          width: 200px !important;
+          height: 100px !important;
+          button.MuiIconButton-root {
+            padding: 2px;
+            margin: -12px -12px auto auto;
+            color: white;
+            background-color: var(--green-lemon-second);
+          }
+        }
+      }
+    }
+    div.col.images {
+      input[id="file-upload"] {
+        display: none;
+      }
+      div.file-selector.disable {
+        border: 1px dashed var(--gray);
+        p {
+          color: var(--gray);
+        }
+        div.col {
+          cursor: not-allowed;
+        }
+      }
+
+      div.file-selector {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 200px;
+        border-radius: 8px;
+        border: 1px dashed var(--green-lemon-second);
+        img {
+          width: 80px;
+        }
+        p {
+          color: var(--green-lemon-second);
+        }
+        div.col {
+          cursor: pointer;
+          align-items: center;
+        }
+      }
+      width: 30%;
+      margin-right: 8px;
+    }
+    div.col.content {
+      width: 100%;
+      textarea {
+        font-size: 1em;
+        padding: 16px;
+        border-radius: 8px;
+        border-color: var(--gray);
+      }
+    }
+    div.col.title {
+      margin-right: 8px;
+      width: 50%;
+    }
+    div.col.tags {
+      width: 50%;
+      margin-left: 8px;
+    }
+  }
+  div.MuiSelect-select {
+    padding: 12px;
+  }
+  div.MuiInputBase-root {
+    border-radius: 8px;
+    min-height: 56px;
+  }
+
+  label.MuiFormLabel-root.Mui-focused {
+    color: var(--green-lemon-second);
+  }
+}
+
+li.MuiListItem-root.Mui-selected {
+  color: white;
+  background-color: var(--green-lemon-second);
+}
+
+li.MuiListItem-root.Mui-selected:hover {
+  background-color: var(--green-lemon-second);
+}
+
+div.chip {
+  margin-right: 4px;
+}
