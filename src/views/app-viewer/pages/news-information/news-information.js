@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import News from "../../components/news/news";
-import { getNews } from "../../actions/home";
+import News from "../../../../components/news/news";
+import { getNews } from "../../../../actions/home";
 import { connect } from "react-redux";
 
 const NewsInformation = ({ dispatch, news }) => {

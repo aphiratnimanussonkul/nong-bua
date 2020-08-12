@@ -4,10 +4,10 @@ import { useHistory } from "react-router-dom";
 
 import Carousel from "react-material-ui-carousel";
 import { CardMedia, Chip, Typography, GridList } from "@material-ui/core";
-import NewsCard from "../../components/news/components/news-card/news-card";
+import NewsCard from "../../../../components/news/components/news-card/news-card";
 
-import { getNewsById } from "../../actions/read-news";
-import { convertHowLong } from "../../helpers/convert-how-long/index";
+import { getNewsById } from "../../../../actions/read-news";
+import { convertHowLong } from "../../../../helpers/convert-how-long/index";
 
 import "./read-news.scss";
 

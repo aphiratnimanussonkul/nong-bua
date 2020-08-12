@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import News from "../../components/news/news";
-import DirectoryCard from "../../components/directory-card/directory-card";
+import News from "../../../../components/news/news";
+import DirectoryCard from "../../../../components/directory-card/directory-card";
 import ProjectCard from "./components/project-card/project-card";
 import { GridList } from "@material-ui/core";
 import { connect } from "react-redux";
@@ -9,7 +9,7 @@ import {
   getVillageFundDireactory,
   getVillageProject,
   getVillageNewsInformation,
-} from "../../actions/village-fund";
+} from "../../../../actions/village-fund";
 
 import "./village-fund.scss";
 

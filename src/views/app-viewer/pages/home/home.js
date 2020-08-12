@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import NewsCarousal from "./components/news-carousal/news-carousal.js";
 import AboutVillage from "./components/about-village/about-village.js";
-import News from "../../components/news/news.js";
+import News from "../../../../components/news/news";
 
 import "./home.scss";
 
-import { getNews, getVillageIntroduce } from "../../actions/home";
+import { getNews, getVillageIntroduce } from "../../../../actions/home";
 
 const Home = ({ dispatch, news, villageIntroduce }) => {
   useEffect(() => {

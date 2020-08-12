@@ -1,11 +1,11 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import Home from "../views/home/home.js";
-import NewsInformation from "../views/news-information/news-information.js";
-import VillageFund from "../views/village-fund/village-fund.js";
-import VillageHealthVolunteer from "../views/village-health-volunteer/village-health-volunteer.js";
-import AboutVillage from "../views/about-village/about-village.js";
-import ReadNews from "../views/read-news/read-news.js";
+import Home from "../pages/home/home.js";
+import NewsInformation from "../pages/news-information/news-information.js";
+import VillageFund from "../pages/village-fund/village-fund.js";
+import VillageHealthVolunteer from "../pages/village-health-volunteer/village-health-volunteer.js";
+import AboutVillage from "../pages/about-village/about-village";
+import ReadNews from "../pages/read-news/read-news.js";
 
 const Routing = () => {
   return (

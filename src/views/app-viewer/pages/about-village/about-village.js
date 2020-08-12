@@ -3,7 +3,7 @@ import InformationCard from "./information-card/information-card";
 import { connect } from "react-redux";
 
 import "./about-village.scss";
-import { getAboutVillage } from "../../actions/about-village";
+import { getAboutVillage } from "../../../../actions/about-village";
 
 const AboutVillage = ({ dispatch, aboutVillages }) => {
   useEffect(() => {
@@ -13,7 +13,12 @@ const AboutVillage = ({ dispatch, aboutVillages }) => {
   return (
     <div className="about-village">
       {aboutVillages.map((aboutVillage, index) => {
-        return <InformationCard information={aboutVillage} key={index}></InformationCard>;
+        return (
+          <InformationCard
+            information={aboutVillage}
+            key={index}
+          ></InformationCard>
+        );
       })}
     </div>
   );

@@ -1,22 +1,12 @@
 import React from "react";
-import Header from "./components/header/header";
-import Footer from "./components/footer/footer";
-import Routes from "./routes/index";
 import { withRouter } from "react-router-dom";
 
 import "./theme/global.scss";
 import "./App.css";
+import AppViewer from "./views/app-viewer/app-viewer";
 
 const App = () => {
-  return (
-    <>
-      <Header></Header>
-      <div className="container">
-        <Routes></Routes>
-      </div>
-      <Footer></Footer>
-    </>
-  );
+  return <AppViewer></AppViewer>;
 };
 
 export default withRouter(App);

@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
-import News from "../../components/news/news";
+import News from "../../../../components/news/news";
 import { GridList } from "@material-ui/core";
 
 import "./village-health-volunteer.scss";
-import DirectoryCard from "../../components/directory-card/directory-card";
+import DirectoryCard from "../../../../components/directory-card/directory-card";
 import StaticCard from "./components/static-card/static-card";
 import {
   getVillageHealthVolunteerNews,
   getVillageHealthVolunteerDirectory,
   getVillageStatic,
-} from "../../actions/village-health-volunteer";
+} from "../../../../actions/village-health-volunteer";
 import { connect } from "react-redux";
 
 const VillageHealthVolunteer = ({
