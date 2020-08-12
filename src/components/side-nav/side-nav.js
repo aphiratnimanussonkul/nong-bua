@@ -10,7 +10,7 @@ const SideNav = () => {
   const menus = [
     {
       label: "ข่าวสาร",
-      link: "/management",
+      link: "/management/news-manage",
       iconName: "assignment",
     },
     {
