@@ -9,7 +9,14 @@ div.content {
   padding: 16px 0;
 }
 
-button.read-more-button {
+button.green-solid-button {
+  background-color: var(--green-lemon-second);
+  border: 1px solid var(--green-lemon-second);
+  color: white;
+  border-radius: 16px;
+}
+
+button.brown-yellow-outlined-button {
   color: var(--brown-yellow-third);
   border-color: var(--brown-yellow-third);
   border-radius: 16px;
@@ -22,4 +29,14 @@ div.chip {
 
 div.directory {
   background-color: var(--light-gray);
+}
+
+div.row {
+  display: flex;
+  flex-direction: row;
+}
+
+div.col {
+  display: flex;
+  flex-direction: column;
 }

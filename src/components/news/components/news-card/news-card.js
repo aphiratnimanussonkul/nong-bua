@@ -52,7 +52,7 @@ const NewsCard = ({ detail }) => {
       </CardActionArea>
       <Divider light />
       <CardActions>
-        <Button size="small" variant="outlined" className="read-more-button">
+        <Button size="small" variant="outlined" className="brown-yellow-outlined-button">
           อ่านเพิ่มเติม
         </Button>
       </CardActions>
