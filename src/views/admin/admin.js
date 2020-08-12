@@ -4,13 +4,15 @@ import "./admin.scss";
 import SideNav from "../../components/side-nav/side-nav";
 import ManagementRoutes from "./routes";
 
-import './admin.scss'
+import "./admin.scss";
 
 const Admin = () => {
   return (
     <div className="management-container">
       <SideNav></SideNav>
-      <ManagementRoutes></ManagementRoutes>
+      <div className="management-routes">
+        <ManagementRoutes></ManagementRoutes>
+      </div>
     </div>
   );
 };

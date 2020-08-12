@@ -1,5 +1,13 @@
 div.management-container {
   display: flex;
-  flex-direction: row;
+  min-height: 100vh;
   background-color: var(--green-back-30);
+  div.management-routes {
+    padding: 32px;
+    margin-left: 400px;
+    width: 100%;
+  }
+  div.side-nav {
+    position: fixed;
+  }
 }
