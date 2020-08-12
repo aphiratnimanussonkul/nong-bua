@@ -3,8 +3,11 @@ body {
   font-family: "Kanit", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  textarea,
+  .MuiInputBase-input,
   .MuiTypography-root,
   .MuiButtonBase-root,
+  .MuiInputLabel-root,
   .MuiChip-root {
     font-family: "Kanit", sans-serif;
   }
