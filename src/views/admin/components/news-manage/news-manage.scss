@@ -95,9 +95,11 @@ div.news-manage {
       margin-left: 8px;
     }
   }
+
   div.MuiSelect-select {
     padding: 12px;
   }
+
   div.MuiInputBase-root {
     border-radius: 8px;
     min-height: 56px;
@@ -119,4 +121,35 @@ li.MuiListItem-root.Mui-selected:hover {
 
 div.chip {
   margin-right: 4px;
+}
+
+div.news-list {
+  background-color: white;
+  margin-top: 16px;
+  border-radius: 32px;
+  padding: 32px;
+  div.MuiTableContainer-root {
+    margin-top: 16px;
+    table {
+      tbody {
+        td {
+          div.table-images {
+            display: flex;
+            flex-direction: row;
+            div.MuiCardMedia-root {
+              margin-right: 4px;
+              width: 32px;
+              height: 32px;
+              border-radius: 16px;
+            }
+          }
+          div.action-buttons {
+            button.MuiIconButton-root {
+              color: var(--green-lemon-second);
+            }
+          }
+        }
+      }
+    }
+  }
 }
