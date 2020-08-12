@@ -1,41 +1,59 @@
-import React from "react";
-
-import "./side-nav.scss";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { ListItemText, List, ListItem, Divider, Icon } from "@material-ui/core";
 import NongBuaLogo from "../../assets/nong-bua-logo.png";
+
+import "./side-nav.scss";
+
 const SideNav = () => {
+  const history = useHistory();
   const menus = [
     {
       label: "ข่าวสาร",
-      link: "/",
+      link: "/management",
       iconName: "assignment",
     },
     {
       label: "ทำเนียบ กองทุน",
-      link: "/news-information",
+      link: "/management/news-information",
       iconName: "people",
     },
     {
       label: "โครงการของกองทุน",
-      link: "/village-fund",
+      link: "/management/village-fund",
       iconName: "source",
     },
     {
       label: "ทำเนียบ อสม",
-      link: "/village-health-volunteer",
+      link: "/management/village-health-volunteer",
       iconName: "people",
     },
     {
       label: "ข้อมูลเชิงสถิติของหมู่บ้าน",
-      link: "/about-village",
+      link: "/management/about-village",
       iconName: "data_usage",
     },
     {
       label: "ข้อมูลทั่วไป",
-      link: "/about-village",
+      link: "/management/about-village",
       iconName: "list_alt",
     },
   ];
+
+  const currentTabMenu = () => {
+    return menus.findIndex((menu) => {
+      const path = history.location.pathname.split("/")[1];
+      return menu.link.includes(path);
+    });
+  };
+
+  const [value, setValue] = useState(currentTabMenu());
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    history.push(menus[newValue].link);
+  };
+
   return (
     <div className="side-nav">
       <div className="logo">
@@ -49,16 +67,14 @@ const SideNav = () => {
           <>
             <div className="list">
               <ListItem
-                // onClick={(event) => handleChange(event, index)}
-                // className={value === index ? "active" : null}
+                onClick={(event) => handleChange(event, index)}
+                className={value === index ? "active" : null}
                 button
                 key={menu.label}
               >
                 <Icon>{menu.iconName}</Icon>
                 <ListItemText primary={menu.label} />
               </ListItem>
-              {/* {value === index ? <div className="active"
-              ></div> : null} */}
             </div>
           </>
         ))}
