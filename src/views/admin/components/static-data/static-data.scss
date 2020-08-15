@@ -1,0 +1,67 @@
+div.static-data {
+  div.row.data-detail {
+    div.col {
+      width: 50%;
+    }
+    div.col:first-child {
+      margin-right: 8px;
+    }
+    div.col:last-child {
+      margin-left: 8px;
+    }
+  }
+
+  div.row.icon-manage {
+    margin-top: 16px;
+    > div.col:nth-child(-n + 2) {
+      margin-right: 16px;
+    }
+    > div.col {
+      width: 30%;
+      p {
+        margin: 4px 0;
+        a {
+          color: var(--green-lemon-second);
+        }
+      }
+    }
+
+    div.col.icon-upload {
+      width: 70%;
+      div.row {
+        div.col.icon-image {
+          justify-content: center;
+          align-items: center;
+          div.MuiCardMedia-root {
+            border-radius: 75px;
+            width: 150px;
+            height: 150px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+          }
+        }
+        > div.col {
+          width: 50%;
+        }
+        > div.col:first-child {
+          margin-right: 16px;
+        }
+      }
+    }
+  }
+}
+
+div.static-data-table {
+  margin-top: 16px;
+  table {
+    tbody {
+      td {
+        div.MuiCardMedia-root {
+          width: 32px;
+          height: 32px;
+          border-radius: 16px;
+          margin: auto;
+        }
+      }
+    }
+  }
+}
