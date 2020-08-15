@@ -30,7 +30,7 @@ const SideNav = () => {
     },
     {
       label: "ข้อมูลเชิงสถิติของหมู่บ้าน",
-      link: "/management/about-village",
+      link: "/management/static-data",
       iconName: "data_usage",
     },
     {
