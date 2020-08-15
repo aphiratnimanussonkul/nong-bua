@@ -1,0 +1,65 @@
+div.about-village-manage {
+  div.row {
+    div.col.image {
+      width: 30%;
+      margin-right: 8px;
+    }
+    div.col.content {
+      width: 100%;
+      textarea {
+        font-size: 1em;
+        padding: 16px;
+        border-radius: 8px;
+        border-color: var(--gray);
+      }
+    }
+    div.col.title {
+      margin-right: 8px;
+      width: 50%;
+    }
+    div.col.sorting {
+      width: 50%;
+      margin-left: 8px;
+    }
+    div.col.image-selected {
+      margin-left: 16px;
+      width: 70%;
+      div.MuiCardMedia-root {
+        height: 200px;
+        border-radius: 16px;
+      }
+    }
+  }
+
+  div.MuiSelect-select {
+    padding: 12px;
+  }
+
+  div.MuiInputBase-root {
+    border-radius: 8px;
+    min-height: 56px;
+  }
+}
+
+div.about-village-table {
+  margin-top: 16px;
+  table {
+    tbody {
+      td {
+        p {
+          margin: 0;
+          height: 3em;
+          line-height: 1.5em;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        div.MuiCardMedia-root {
+          width: 32px;
+          height: 32px;
+          border-radius: 16px;
+          margin: auto;
+        }
+      }
+    }
+  }
+}
