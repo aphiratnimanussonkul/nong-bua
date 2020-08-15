@@ -108,20 +108,7 @@ const NewsManage = () => {
         <div className="row">
           <div className="col title">
             <h3 className="toppick">หัวข้อข่าว</h3>
-            <TextField
-              label="หัวข้อข่าว"
-              type="text"
-              variant="outlined"
-              InputProps={{
-                classes: {
-                  root: {
-                    "&:hover:not($disabled):not($focused):not($error) $notchedOutline": {
-                      borderColor: "#80b156",
-                    },
-                  },
-                },
-              }}
-            />
+            <TextField label="หัวข้อข่าว" type="text" variant="outlined" />
           </div>
 
           <div className="col tags">

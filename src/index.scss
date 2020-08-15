@@ -11,6 +11,14 @@ body {
   .MuiChip-root {
     font-family: "Kanit", sans-serif;
   }
+
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: var(--green-lemon-second);
+  }
+
+  label.MuiFormLabel-root.Mui-focused {
+    color: var(--green-lemon-second);
+  }
 }
 
 code {
