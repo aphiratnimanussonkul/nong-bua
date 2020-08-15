@@ -110,6 +110,9 @@ li.MuiListItem-root.Mui-selected:hover {
 //Table With images and action button
 table {
   tbody {
+    td.MuiTableCell-root {
+      padding: 8px;
+    }
     td {
       div.table-images {
         display: flex;
