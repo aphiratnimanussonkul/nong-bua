@@ -69,7 +69,7 @@ const VillageFundDirectory = () => {
             <TextField label="ตำแหน่ง" type="text" variant="outlined" />
           </div>
           <div className="col">
-            <h3 className="toppick">ประเภทข่าว</h3>
+            <h3 className="toppick">ลำดับการแสดง</h3>
             <FormControl variant="outlined">
               <Select
                 variant="outlined"
