@@ -1,0 +1,28 @@
+div.village-fund-project {
+  div.row {
+    div.col {
+      width: 50%;
+    }
+    div.col.hint {
+      p {
+        margin: 0;
+        color: var(--gray);
+      }
+    }
+    div.col.action-button {
+      justify-content: flex-end;
+      display: flex;
+      flex-direction: row;
+      button.brown-yellow-outlined-button {
+        margin-right: 8px;
+      }
+    }
+  }
+  div.row:last-child {
+    margin-top: 16px;
+  }
+}
+
+div.project-table {
+  margin-top: 16px;
+}
