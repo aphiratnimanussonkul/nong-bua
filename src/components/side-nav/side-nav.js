@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { ListItemText, List, ListItem, Divider, Icon } from "@material-ui/core";
+import { ListItemText, List, ListItem, Icon } from "@material-ui/core";
 import NongBuaLogo from "../../assets/nong-bua-logo.png";
 
 import "./side-nav.scss";
