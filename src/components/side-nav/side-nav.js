@@ -15,12 +15,12 @@ const SideNav = () => {
     },
     {
       label: "ทำเนียบ กองทุน",
-      link: "/management/news-information",
+      link: "/management/village-fund-directory",
       iconName: "people",
     },
     {
       label: "โครงการของกองทุน",
-      link: "/management/village-fund",
+      link: "/management/village-fund-project",
       iconName: "source",
     },
     {
