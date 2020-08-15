@@ -131,11 +131,7 @@ const NewsManage = () => {
                 }}
               >
                 {tagsSelecter.map((option) => (
-                  <MenuItem
-                    key={option.name}
-                    value={option.name}
-                    // style={getStyles(name, personName, theme)}
-                  >
+                  <MenuItem key={option.name} value={option.name}>
                     {option.name}
                   </MenuItem>
                 ))}

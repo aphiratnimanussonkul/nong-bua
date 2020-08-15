@@ -58,6 +58,43 @@ div.management-card {
   div.MuiChip-root {
     margin-right: 4px;
   }
+
+  div.row {
+    div.col {
+      h3 {
+        margin-bottom: 8px;
+      }
+    }
+  }
+
+  input[id="file-upload"] {
+    display: none;
+  }
+
+  div.file-selector {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    border-radius: 8px;
+    border: 1px dashed var(--green-lemon-second);
+    img {
+      width: 80px;
+    }
+    p {
+      color: var(--green-lemon-second);
+    }
+    div.col {
+      cursor: pointer;
+      align-items: center;
+    }
+  }
+
+  //Table
+  div.MuiTableContainer-root {
+    margin-top: 16px;
+  }
 }
 
 //Multiselect

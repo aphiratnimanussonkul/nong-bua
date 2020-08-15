@@ -1,0 +1,42 @@
+div.village-fund-directory {
+  div.row.name-position-sort {
+    div.col {
+      width: 33%;
+    }
+  }
+
+  div.row {
+    div.col:nth-child(-n + 2) {
+      margin-right: 16px;
+    }
+  }
+
+  div.row.image-profile {
+    margin-top: 16px;
+    > div.col {
+      width: 33%;
+      div.MuiCardMedia-root {
+        border-radius: 100px;
+        width: 200px;
+        height: 200px;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
+}
+
+div.village-fund-directory-table {
+  margin-top: 16px;
+  table {
+    tbody {
+      td {
+        div.MuiCardMedia-root {
+          width: 32px;
+          height: 32px;
+          border-radius: 16px;
+          margin: auto;
+        }
+      }
+    }
+  }
+}
