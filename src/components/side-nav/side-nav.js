@@ -42,7 +42,7 @@ const SideNav = () => {
 
   const currentTabMenu = () => {
     return menus.findIndex((menu) => {
-      const path = history.location.pathname.split("/")[1];
+      const path = history.location.pathname.split("/")[2];
       return menu.link.includes(path);
     });
   };
