@@ -104,7 +104,7 @@ const NewsManage = () => {
   ];
   return (
     <>
-      <div className="news-manage">
+      <div className="management-card news-manage">
         <div className="row">
           <div className="col title">
             <h3 className="toppick">หัวข้อข่าว</h3>
@@ -115,8 +115,6 @@ const NewsManage = () => {
             <h3 className="toppick">ประเภทข่าว</h3>
             <FormControl variant="outlined">
               <Select
-                labelId="demo-mutiple-chip-label"
-                id="demo-mutiple-chip"
                 multiple
                 variant="outlined"
                 value={tags}
@@ -213,7 +211,7 @@ const NewsManage = () => {
           </Button>
         </div>
       </div>
-      <div className="news-list">
+      <div className="news-list management-card">
         <h3 className="toppick">ข่าวสารทั้งหมด</h3>
         <TableContainer component={Paper}>
           <Table stickyHeader>

@@ -1,16 +1,4 @@
 div.news-manage {
-  background-color: white;
-  border-radius: 32px;
-  padding: 32px;
-
-  div.row.action-button {
-    margin-top: 16px;
-    justify-content: flex-end;
-    button.brown-yellow-outlined-button {
-      margin-right: 8px;
-    }
-  }
-
   div.row {
     div.col {
       h3 {
@@ -106,46 +94,9 @@ div.news-manage {
   }
 }
 
-li.MuiListItem-root.Mui-selected {
-  color: white;
-  background-color: var(--green-lemon-second);
-}
-
-li.MuiListItem-root.Mui-selected:hover {
-  background-color: var(--green-lemon-second);
-}
-
-div.chip {
-  margin-right: 4px;
-}
-
 div.news-list {
-  background-color: white;
   margin-top: 16px;
-  border-radius: 32px;
-  padding: 32px;
   div.MuiTableContainer-root {
     margin-top: 16px;
-    table {
-      tbody {
-        td {
-          div.table-images {
-            display: flex;
-            flex-direction: row;
-            div.MuiCardMedia-root {
-              margin-right: 4px;
-              width: 32px;
-              height: 32px;
-              border-radius: 16px;
-            }
-          }
-          div.action-buttons {
-            button.MuiIconButton-root {
-              color: var(--green-lemon-second);
-            }
-          }
-        }
-      }
-    }
   }
 }
