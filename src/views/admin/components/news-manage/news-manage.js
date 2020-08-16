@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
+import Loading from "../../../../components/loading/loading";
 import "./news-manage.scss";
 import {
   TextField,
@@ -20,13 +21,35 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Modal,
 } from "@material-ui/core";
 
 import UploadIcon from "../../../../assets/upload.png";
 import UploadGrayIcon from "../../../../assets/upload-gray.png";
+import { connect } from "react-redux";
+import { getNews } from "../../../../actions/home";
+import { createNews, deleteNewsById } from "../../../../actions/read-news";
+import { convertHowLong } from "../../../../helpers/convert-how-long/index";
+import {
+  uploadNewsImage,
+  deleteImageUploaded,
+} from "../../../../actions/upload-image";
+import ConfirmModal from "../../../../components/confirm-modal/confirm-modal";
 
-const NewsManage = () => {
-  const [images, setImages] = useState([]);
+const NewsManage = ({ dispatch, news, isLoading }) => {
+  useEffect(() => {
+    dispatch(getNews());
+  }, [dispatch]);
+
+  // Const variable
+  const headers = [
+    { name: "ลำดับที่", align: "center" },
+    { name: "หัวข้อข่าว", align: "left" },
+    { name: "รูปภาพ", align: "left" },
+    { name: "ประเภท", align: "left" },
+    { name: "เขียนเมื่อ", align: "left" },
+    { name: "แก้ไข / ลบ", align: "right" },
+  ];
   const tagsSelecter = [
     {
       name: "อสม",
@@ -39,76 +62,151 @@ const NewsManage = () => {
     },
   ];
 
-  const [tags, setTags] = useState([]);
+  const initCreateNewsDetail = {
+    title: "",
+    tags: [],
+    description: "",
+    images: [],
+  };
 
-  const handleChange = (event) => {
-    setTags(event.target.value);
+  const [createNewsDetail, setCreateNewsDetail] = useState(
+    initCreateNewsDetail
+  );
+  const initCreateNewsDatailValidate = {
+    title: false,
+    tags: false,
+    description: false,
+    images: false,
+  };
+  const [createNewsDatailValidate, setCreateNewsDatailValidate] = useState(
+    initCreateNewsDatailValidate
+  );
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [newsToDelete, setNewsToDelete] = useState(null);
+
+  const isImagesHaveFour = () => {
+    return createNewsDetail.images.length >= 4;
+  };
+
+  //Set data to create news
+  const handleInputTitleChange = (event) => {
+    const { title, ...others } = createNewsDetail;
+    setCreateNewsDetail({ title: event.target.value, ...others });
+    getAndUpdateCreateNewsDetailValidate();
+  };
+
+  const handleTagsChange = (event) => {
+    const { tags, ...others } = createNewsDetail;
+    setCreateNewsDetail({ tags: event.target.value, ...others });
+    getAndUpdateCreateNewsDetailValidate();
+  };
+
+  const handleTextAreaContentChange = (event) => {
+    const { description, ...others } = createNewsDetail;
+    setCreateNewsDetail({ description: event.target.value, ...others });
+    getAndUpdateCreateNewsDetailValidate();
   };
 
   const handleChooseFile = (event) => {
     const newImage = event.target.files[0];
+    const { images, ...others } = createNewsDetail;
     if (!images.find((image) => image.name === newImage.name)) {
-      setImages([...images, newImage]);
+      setCreateNewsDetail({ images: [...images, newImage], ...others });
     }
-  };
-
-  const isImagesHaveFour = () => {
-    return images.length >= 4;
-  };
-
-  const createUrlImage = (file) => {
-    return URL.createObjectURL(file);
   };
 
   const deleteImage = (imageDelete) => {
+    const { images, ...others } = createNewsDetail;
     if (images.length === 1) {
-      setImages([]);
+      setCreateNewsDetail({ images: [], ...others });
       return;
     }
-    setImages(
-      images.splice(
+    setCreateNewsDetail({
+      images: images.splice(
         images.findIndex((image) => image === imageDelete),
         1
-      )
-    );
+      ),
+      ...others,
+    });
   };
 
-  const createData = (title, images, createdAt) => {
-    return { title, images, createdAt };
+  //Handle action button
+  const onCreateNewsButtonPress = async () => {
+    const crateNewsDetailInValid = getAndUpdateCreateNewsDetailValidate();
+    if (!crateNewsDetailInValid) {
+      let imageUrlUploaded = [];
+      let imageRefPath = [];
+      try {
+        const uploadTasks = await uploadNewsImage(createNewsDetail.images);
+        const uploadTaskPromise = uploadTasks.map(async (task) => {
+          await task.then(async (taskResult) => {
+            imageRefPath.push(taskResult.metadata.fullPath);
+            await taskResult.ref.getDownloadURL().then((downloadUrl) => {
+              imageUrlUploaded.push(downloadUrl);
+            });
+          });
+        });
+
+        Promise.all(uploadTaskPromise).then(async () => {
+          const { images, ...others } = createNewsDetail;
+          await createNews({ images: imageUrlUploaded, ...others })
+            .then(() => {
+              dispatch(getNews());
+              setCreateNewsDatailValidate(initCreateNewsDatailValidate);
+              setCreateNewsDetail(initCreateNewsDetail);
+            })
+            .catch(() => {
+              deleteImageUploaded(imageRefPath);
+            });
+        });
+      } catch (error) {
+        alert("ไม่สามารถเพิ่มข่าวได้, กรุณาลองใหม่อีกครั้ง");
+        setCreateNewsDatailValidate(initCreateNewsDatailValidate);
+        setCreateNewsDetail(initCreateNewsDetail);
+      }
+    }
   };
 
-  const imageUrl =
-    "https://i.ytimg.com/vi/8OcC_b0FJdI/hq720_live.jpg?sqp=CMiM0PkF-oaymwEZCNAFEJQDSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLBqafv9DwYFiB4L835jEbGJbZ4qtw";
+  const getAndUpdateCreateNewsDetailValidate = () => {
+    const titleInValid = createNewsDetail.title === "";
+    const tagsInValid = createNewsDetail.tags.length ? false : true;
+    const descriptionInValid = createNewsDetail.description === "";
+    const imagesInValid = createNewsDetail.images.length ? false : true;
+    setCreateNewsDatailValidate({
+      title: titleInValid,
+      tags: tagsInValid,
+      description: descriptionInValid,
+      images: imagesInValid,
+    });
+    return titleInValid || tagsInValid || descriptionInValid || imagesInValid;
+  };
 
-  const rows = [
-    createData(
-      "Frozen yoghurt",
-      [imageUrl, imageUrl, imageUrl],
-      "Mon 03 Jul 2020"
-    ),
-    createData("Frozen yoghurt", [imageUrl, imageUrl], "Mon 03 Jul 2020"),
-    createData(" yoghurt", [imageUrl], "Mon 03 Jul 2020"),
-    createData(
-      "Frozen asdadadadad",
-      [imageUrl, imageUrl, imageUrl, imageUrl],
-      "Mon 03 Jul 2020"
-    ),
-  ];
+  const onClickDeleteNews = (news) => {
+    setNewsToDelete(news);
+    setConfirmModalOpen(true);
+  };
 
-  const headers = [
-    { name: "ลำดับที่", align: "center" },
-    { name: "หัวข้อข่าว", align: "left" },
-    { name: "รูปภาพ", align: "left" },
-    { name: "เขียนเมื่อ", align: "left" },
-    { name: "แก้ไข / ลบ", align: "right" },
-  ];
+  const handleConfirmDelete = () => {
+    deleteNewsById(newsToDelete.id);
+    setConfirmModalOpen(false);
+    dispatch(getNews());
+  };
+
   return (
     <>
       <div className="management-card news-manage">
         <div className="row">
           <div className="col title">
             <h3 className="toppick">หัวข้อข่าว</h3>
-            <TextField label="หัวข้อข่าว" type="text" variant="outlined" />
+            <TextField
+              error={createNewsDatailValidate.title}
+              onChange={handleInputTitleChange}
+              value={createNewsDetail.title}
+              label="หัวข้อข่าว"
+              placeholder="เช่น กองทุนหมู่บ้าน จัดประชุมเกี่ยวกับ ..."
+              type="text"
+              variant="outlined"
+            />
           </div>
 
           <div className="col tags">
@@ -117,13 +215,13 @@ const NewsManage = () => {
               <Select
                 multiple
                 variant="outlined"
-                value={tags}
-                onChange={handleChange}
+                error={createNewsDatailValidate.tags}
+                value={createNewsDetail.tags}
+                onChange={handleTagsChange}
                 renderValue={(tags) => {
-                  console.log(tags);
                   return (
                     <div>
-                      {tags.map((value) => (
+                      {createNewsDetail.tags.map((value) => (
                         <Chip key={value} label={value} className="chip" />
                       ))}
                     </div>
@@ -142,7 +240,15 @@ const NewsManage = () => {
         <div className="row">
           <div className="col content">
             <h3 className="toppick">เนื้อหาข่าว</h3>
-            <TextareaAutosize rowsMin={5} placeholder="เนื้อหา" />
+            <TextareaAutosize
+              className={
+                createNewsDatailValidate.description ? "text-area-error" : null
+              }
+              rowsMin={5}
+              placeholder="เนื้อหา"
+              value={createNewsDetail.description}
+              onChange={handleTextAreaContentChange}
+            />
           </div>
         </div>
         <div className="row">
@@ -180,8 +286,8 @@ const NewsManage = () => {
           <div className="col images-selected">
             <h3 className="toppick">รูปภาพที่เลือก</h3>
             <GridList>
-              {images.map((image) => (
-                <CardMedia image={createUrlImage(image)} key={image.name}>
+              {createNewsDetail.images.map((image) => (
+                <CardMedia image={URL.createObjectURL(image)} key={image.name}>
                   <IconButton onClick={() => deleteImage(image)}>
                     <Icon>clear</Icon>
                   </IconButton>
@@ -195,6 +301,7 @@ const NewsManage = () => {
             size="small"
             variant="outlined"
             className="brown-yellow-outlined-button"
+            onClick={() => setCreateNewsDetail(initCreateNewsDetail)}
           >
             ยกเลิก
           </Button>
@@ -202,55 +309,91 @@ const NewsManage = () => {
             size="small"
             variant="outlined"
             className="green-solid-button"
+            onClick={onCreateNewsButtonPress}
           >
             บันทึก
           </Button>
         </div>
       </div>
-      <div className="news-list management-card">
-        <h3 className="toppick">ข่าวสารทั้งหมด</h3>
-        <TableContainer component={Paper}>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                {headers.map((header, index) => (
-                  <TableCell align={header.align} key={index}>
-                    {header.name}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row, index) => (
-                <TableRow key={row.name}>
-                  <TableCell align="center">{index + 1}</TableCell>
-                  <TableCell align="left">{row.title}</TableCell>
-                  <TableCell align="left">
-                    <div className="table-images">
-                      {row.images.map((image, index) => (
-                        <CardMedia image={image} key={index}></CardMedia>
-                      ))}
-                    </div>
-                  </TableCell>
-                  <TableCell align="left">{row.createdAt}</TableCell>
-                  <TableCell align="right">
-                    <div className="action-buttons">
-                      <IconButton>
-                        <Icon>create</Icon>
-                      </IconButton>
-                      <IconButton>
-                        <Icon>delete</Icon>
-                      </IconButton>
-                    </div>
-                  </TableCell>
+      {isLoading ? (
+        <Loading></Loading>
+      ) : (
+        <div className="news-list management-card">
+          <h3 className="toppick">ข่าวสารทั้งหมด</h3>
+          <TableContainer component={Paper}>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  {headers.map((header, index) => (
+                    <TableCell align={header.align} key={index}>
+                      {header.name}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
+              </TableHead>
+              <TableBody>
+                {news.map((row, index) => (
+                  <TableRow key={row.id}>
+                    <TableCell align="center">{index + 1}</TableCell>
+                    <TableCell align="left">{row.title}</TableCell>
+                    <TableCell align="left">
+                      <div className="table-images">
+                        {row.images.map((image, index) => (
+                          <CardMedia image={image} key={index}></CardMedia>
+                        ))}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div>
+                        {row.tags.map((value) => (
+                          <Chip key={value} label={value} className="chip" />
+                        ))}
+                      </div>
+                    </TableCell>
+                    <TableCell align="left">
+                      {convertHowLong(row.createdAt.seconds)}
+                    </TableCell>
+                    <TableCell align="right">
+                      <div className="action-buttons">
+                        <IconButton>
+                          <Icon>create</Icon>
+                        </IconButton>
+                        <IconButton onClick={() => onClickDeleteNews(row)}>
+                          <Icon>delete</Icon>
+                        </IconButton>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      )}
+      {confirmModalOpen ? (
+        <ConfirmModal
+          onCancel={() => setConfirmModalOpen(false)}
+          onConfirm={handleConfirmDelete}
+          title="คุณต้องการลบข่าวนี้ ใช่ หรือ ไม่"
+          descrption={[
+            {
+              title: "หัวข้อข่าว",
+              detail: newsToDelete.title,
+            },
+            {
+              title: "เนื้อหา",
+              detail: newsToDelete.description,
+            },
+          ]}
+        ></ConfirmModal>
+      ) : null}
     </>
   );
 };
 
-export default NewsManage;
+const mapStateToProps = (state) => ({
+  news: state.home.news,
+  isLoading: state.home.isLoading,
+});
+
+export default connect(mapStateToProps)(NewsManage);
