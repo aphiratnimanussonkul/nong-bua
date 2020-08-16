@@ -10,8 +10,11 @@ import StaticData from "../components/static-data/static-data";
 const ManagementRoutes = () => {
   return (
     <Switch>
-      <Route exact path="/management" component={NewsManage} />
-      <Route exact path="/management/news-manage" component={NewsManage} />
+      <Route
+        exact
+        path={["/management", "/management/news-manage"]}
+        component={NewsManage}
+      />
       <Route
         exact
         path="/management/village-fund-directory"
