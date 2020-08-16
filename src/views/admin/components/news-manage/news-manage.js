@@ -88,6 +88,14 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
     return createNewsDetail.images.length >= 4;
   };
 
+  const getImageUrl = (image) => {
+    try {
+      return URL.createObjectURL(image);
+    } catch {
+      return image;
+    }
+  };
+
   //Set data to create news
   const handleInputTitleChange = (event) => {
     const { title, ...others } = createNewsDetail;
@@ -131,7 +139,17 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
   };
 
   //Handle action button
-  const onCreateNewsButtonPress = async () => {
+  const onClickSaveNews = () => {
+    if (newsToDelete !== null) {
+      updateNews();
+    } else {
+      insertNews();
+    }
+  };
+
+  const updateNews = () => {};
+
+  const insertNews = async () => {
     const crateNewsDetailInValid = getAndUpdateCreateNewsDetailValidate();
     if (!crateNewsDetailInValid) {
       let imageUrlUploaded = [];
@@ -287,7 +305,7 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
             <h3 className="toppick">รูปภาพที่เลือก</h3>
             <GridList>
               {createNewsDetail.images.map((image) => (
-                <CardMedia image={URL.createObjectURL(image)} key={image.name}>
+                <CardMedia image={getImageUrl(image)} key={image.name}>
                   <IconButton onClick={() => deleteImage(image)}>
                     <Icon>clear</Icon>
                   </IconButton>
@@ -309,7 +327,7 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
             size="small"
             variant="outlined"
             className="green-solid-button"
-            onClick={onCreateNewsButtonPress}
+            onClick={onClickSaveNews}
           >
             บันทึก
           </Button>
@@ -355,7 +373,7 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
                     </TableCell>
                     <TableCell align="right">
                       <div className="action-buttons">
-                        <IconButton>
+                        <IconButton onClick={() => setCreateNewsDetail(row)}>
                           <Icon>create</Icon>
                         </IconButton>
                         <IconButton onClick={() => onClickDeleteNews(row)}>
