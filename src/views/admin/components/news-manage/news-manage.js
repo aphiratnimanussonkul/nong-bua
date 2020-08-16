@@ -28,7 +28,11 @@ import UploadIcon from "../../../../assets/upload.png";
 import UploadGrayIcon from "../../../../assets/upload-gray.png";
 import { connect } from "react-redux";
 import { getNews } from "../../../../actions/home";
-import { createNews, deleteNewsById } from "../../../../actions/read-news";
+import {
+  createNews,
+  deleteNewsById,
+  updateNewsById,
+} from "../../../../actions/read-news";
 import { convertHowLong } from "../../../../helpers/convert-how-long/index";
 import {
   uploadNewsImage,
@@ -83,7 +87,7 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
   );
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [newsToDelete, setNewsToDelete] = useState(null);
-
+  const [mangeNewsState, setManageNewsState] = useState("CREATE");
   const isImagesHaveFour = () => {
     return createNewsDetail.images.length >= 4;
   };
@@ -140,14 +144,23 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
 
   //Handle action button
   const onClickSaveNews = () => {
-    if (newsToDelete !== null) {
+    if (mangeNewsState === "UPDATE") {
       updateNews();
-    } else {
+    } else if (mangeNewsState === "CREATE") {
       insertNews();
     }
   };
 
-  const updateNews = () => {};
+  const updateNews = async () => {
+    const crateNewsDetailInValid = getAndUpdateCreateNewsDetailValidate();
+    if (!crateNewsDetailInValid) {
+      await updateNewsById(createNewsDetail);
+      setCreateNewsDetail(initCreateNewsDetail);
+      setCreateNewsDatailValidate(initCreateNewsDatailValidate);
+      setManageNewsState("CREATE");
+      dispatch(getNews());
+    }
+  };
 
   const insertNews = async () => {
     const crateNewsDetailInValid = getAndUpdateCreateNewsDetailValidate();
@@ -373,7 +386,12 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
                     </TableCell>
                     <TableCell align="right">
                       <div className="action-buttons">
-                        <IconButton onClick={() => setCreateNewsDetail(row)}>
+                        <IconButton
+                          onClick={() => {
+                            setManageNewsState("UPDATE");
+                            setCreateNewsDetail(row);
+                          }}
+                        >
                           <Icon>create</Icon>
                         </IconButton>
                         <IconButton onClick={() => onClickDeleteNews(row)}>

@@ -53,3 +53,8 @@ export const createNews = async (news) => {
 export const deleteNewsById = async (newsId) => {
   return await firestore.collection("news-information").doc(newsId).delete();
 };
+
+export const updateNewsById = async (news) => {
+  const { id, ...others } = news;
+  return await firestore.collection("news-information").doc(id).update(others);
+};
