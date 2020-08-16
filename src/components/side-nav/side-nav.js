@@ -41,6 +41,9 @@ const SideNav = () => {
   ];
 
   const currentTabMenu = () => {
+    if (history.location.pathname === "/management") {
+      return 0;
+    }
     return menus.findIndex((menu) => {
       const path = history.location.pathname.split("/")[2];
       return menu.link.includes(path);
