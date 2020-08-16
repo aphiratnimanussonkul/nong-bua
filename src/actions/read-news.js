@@ -1,7 +1,8 @@
-import firebase from "../firebase/index";
+import firebase from "firebase/app";
+import firebaseApp from "../firebase/index";
 import { createActionSet } from "../helpers/index";
 
-const { firestore } = firebase;
+const { firestore } = firebaseApp;
 
 export const FETCH_NEWS_BY_ID = createActionSet("FETCH_NEWS_BY_ID");
 export const FETCH_NEWS_RELATE = createActionSet("FETCH_NEWS_RELATE");
@@ -40,4 +41,15 @@ const getNewsRelate = async (tags) => {
     .collection("news-information")
     .where("tags", "array-contains-any", tags)
     .get();
+};
+
+export const createNews = async (news) => {
+  return await firestore.collection("news-information").add({
+    ...news,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  });
+};
+
+export const deleteNewsById = async (newsId) => {
+  return await firestore.collection("news-information").doc(newsId).delete();
 };
