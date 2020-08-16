@@ -1,0 +1,48 @@
+div.modal {
+  width: 500px;
+  height: 235px;
+  top: calc(50% - 117.5px);
+  left: calc(50% - 250px);
+  background-color: white;
+  border-radius: 16px;
+  position: relative;
+  padding: 16px;
+
+  div.detail {
+    height: 156px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    div.row {
+      div.col {
+        p {
+          margin: 4px 0;
+          color: var(--gray);
+        }
+      }
+      div.col.title {
+        text-align: right;
+        margin-right: 8px;
+        width: 100px;
+      }
+      div.col:last-child {
+        width: calc(100% - 100px);
+      }
+    }
+  }
+
+  div.row.action-button {
+    justify-content: flex-end;
+    margin-top: 8px;
+    button.MuiButton-root:first-child {
+      margin-right: 8px;
+    }
+  }
+
+  hr.MuiDivider-root {
+    margin-top: 8px;
+  }
+}
+
+div.modal:focus {
+  outline: none !important;
+}
