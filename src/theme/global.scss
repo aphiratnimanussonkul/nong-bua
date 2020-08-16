@@ -16,10 +16,21 @@ button.green-solid-button {
   border-radius: 16px;
 }
 
+button.green-solid-button:hover {
+  background-color: var(--green-lemon-second-hover);
+  border: 1px solid var(--green-lemon-second-hover);
+}
+
 button.brown-yellow-outlined-button {
   color: var(--brown-yellow-third);
   border-color: var(--brown-yellow-third);
   border-radius: 16px;
+}
+
+button.brown-yellow-outlined-button:hover {
+  color: var(--brown-yellow-third-hover);
+  border-color: var(--brown-yellow-third-hover);
+  background-color: white;
 }
 
 div.chip {
@@ -131,4 +142,12 @@ table {
       }
     }
   }
+}
+
+textarea.text-area-error {
+  border-color: red !important;
+}
+
+textarea.text-area-error::placeholder {
+  color: red !important;
 }
