@@ -21,7 +21,6 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Modal,
 } from "@material-ui/core";
 
 import UploadIcon from "../../../../assets/upload.png";
@@ -66,13 +65,13 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
     },
   ];
 
+  //State for create news
   const initCreateNewsDetail = {
     title: "",
     tags: [],
     description: "",
     images: [],
   };
-
   const [createNewsDetail, setCreateNewsDetail] = useState(
     initCreateNewsDetail
   );
@@ -85,9 +84,16 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
   const [createNewsDatailValidate, setCreateNewsDatailValidate] = useState(
     initCreateNewsDatailValidate
   );
+
+  //State for delete news
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [newsToDelete, setNewsToDelete] = useState(null);
-  const [mangeNewsState, setManageNewsState] = useState("CREATE");
+
+  //State for update news
+  const [newsToUpdate, setNewsToUpdate] = useState(null);
+  const [imagesToUpload, setImagesToUpload] = useState([]);
+  const [imagesToDelete, setImagesToDelete] = useState([]);
+
   const isImagesHaveFour = () => {
     return createNewsDetail.images.length >= 4;
   };
@@ -97,6 +103,15 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
       return URL.createObjectURL(image);
     } catch {
       return image;
+    }
+  };
+
+  const isImageOnServer = (image) => {
+    try {
+      URL.createObjectURL(image);
+      return false;
+    } catch {
+      return true;
     }
   };
 
@@ -122,31 +137,44 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
   const handleChooseFile = (event) => {
     const newImage = event.target.files[0];
     const { images, ...others } = createNewsDetail;
-    if (!images.find((image) => image.name === newImage.name)) {
+    if (newsToUpdate) {
+      setImagesToUpload([...imagesToUpload, newImage]);
       setCreateNewsDetail({ images: [...images, newImage], ...others });
+    } else {
+      if (!images.find((image) => image.name === newImage.name)) {
+        setCreateNewsDetail({ images: [...images, newImage], ...others });
+      }
     }
+    document.getElementById("file-upload").value = null
   };
 
   const deleteImage = (imageDelete) => {
     const { images, ...others } = createNewsDetail;
+    if (newsToUpdate) {
+      if (isImageOnServer(imageDelete)) {
+        setImagesToDelete([...imagesToDelete, imageDelete]);
+      } else {
+        setImagesToUpload([
+          imagesToUpload.filter((image) => image !== imageDelete),
+        ]);
+      }
+    }
     if (images.length === 1) {
       setCreateNewsDetail({ images: [], ...others });
       return;
     }
+
     setCreateNewsDetail({
-      images: images.splice(
-        images.findIndex((image) => image === imageDelete),
-        1
-      ),
+      images: images.filter((image) => image !== imageDelete),
       ...others,
     });
   };
 
   //Handle action button
   const onClickSaveNews = () => {
-    if (mangeNewsState === "UPDATE") {
+    if (newsToUpdate) {
       updateNews();
-    } else if (mangeNewsState === "CREATE") {
+    } else {
       insertNews();
     }
   };
@@ -157,10 +185,12 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
       await updateNewsById(createNewsDetail);
       setCreateNewsDetail(initCreateNewsDetail);
       setCreateNewsDatailValidate(initCreateNewsDatailValidate);
-      setManageNewsState("CREATE");
+      setNewsToUpdate(null);
       dispatch(getNews());
     }
   };
+
+  const updateNewsImage = () => {};
 
   const insertNews = async () => {
     const crateNewsDetailInValid = getAndUpdateCreateNewsDetailValidate();
@@ -226,6 +256,9 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
   return (
     <>
       <div className="management-card news-manage">
+        {console.log("createNewsDetail: ", createNewsDetail)}
+        {console.log("imagesToUpload: ", imagesToUpload)}
+        {console.log("imagesToDelete: ", imagesToDelete)}
         <div className="row">
           <div className="col title">
             <h3 className="toppick">หัวข้อข่าว</h3>
@@ -317,8 +350,8 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
           <div className="col images-selected">
             <h3 className="toppick">รูปภาพที่เลือก</h3>
             <GridList>
-              {createNewsDetail.images.map((image) => (
-                <CardMedia image={getImageUrl(image)} key={image.name}>
+              {createNewsDetail.images.map((image, index) => (
+                <CardMedia image={getImageUrl(image)} key={index}>
                   <IconButton onClick={() => deleteImage(image)}>
                     <Icon>clear</Icon>
                   </IconButton>
@@ -332,7 +365,12 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
             size="small"
             variant="outlined"
             className="brown-yellow-outlined-button"
-            onClick={() => setCreateNewsDetail(initCreateNewsDetail)}
+            onClick={() => {
+              setCreateNewsDetail(initCreateNewsDetail);
+              setNewsToUpdate(null);
+              setImagesToUpload([]);
+              setImagesToDelete([]);
+            }}
           >
             ยกเลิก
           </Button>
@@ -388,7 +426,7 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
                       <div className="action-buttons">
                         <IconButton
                           onClick={() => {
-                            setManageNewsState("UPDATE");
+                            setNewsToUpdate(row);
                             setCreateNewsDetail(row);
                           }}
                         >
