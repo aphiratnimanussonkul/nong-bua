@@ -34,7 +34,7 @@ import {
 } from "../../../../actions/read-news";
 import { convertHowLong } from "../../../../helpers/convert-how-long/index";
 import {
-  uploadNewsImage,
+  uploadImages,
   deleteImageUploaded,
 } from "../../../../actions/upload-image";
 import ConfirmModal from "../../../../components/confirm-modal/confirm-modal";
@@ -94,8 +94,17 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
   const [imagesToUpload, setImagesToUpload] = useState([]);
   const [imagesToDelete, setImagesToDelete] = useState([]);
 
+  const setInitData = () => {
+    setCreateNewsDetail(initCreateNewsDetail);
+    setCreateNewsDatailValidate(initCreateNewsDatailValidate);
+    setNewsToUpdate(null);
+    setNewsToDelete(null);
+    setImagesToUpload([]);
+    setImagesToDelete([]);
+  };
+  
   const isImagesHaveFour = () => {
-    return createNewsDetail.images.length >= 4;
+    return createNewsDetail.images.length + imagesToUpload.length >= 4;
   };
 
   const getImageUrl = (image) => {
@@ -113,6 +122,13 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
     } catch {
       return true;
     }
+  };
+
+  const getImageFullPathFromUrl = (imageUrl) => {
+    const indexSubStr = imageUrl.indexOf("news-images");
+    const iamgePathLenght = imageUrl.indexOf("?alt") - indexSubStr;
+    const imagePath = imageUrl.substr(indexSubStr, iamgePathLenght);
+    return decodeURIComponent(imagePath);
   };
 
   //Set data to create news
@@ -136,38 +152,36 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
 
   const handleChooseFile = (event) => {
     const newImage = event.target.files[0];
-    const { images, ...others } = createNewsDetail;
-    if (newsToUpdate) {
+    if (!imagesToUpload.find((image) => image.name === newImage.name)) {
       setImagesToUpload([...imagesToUpload, newImage]);
-      setCreateNewsDetail({ images: [...images, newImage], ...others });
-    } else {
-      if (!images.find((image) => image.name === newImage.name)) {
-        setCreateNewsDetail({ images: [...images, newImage], ...others });
-      }
     }
-    document.getElementById("file-upload").value = null
+    document.getElementById("file-upload").value = null;
   };
 
   const deleteImage = (imageDelete) => {
     const { images, ...others } = createNewsDetail;
-    if (newsToUpdate) {
-      if (isImageOnServer(imageDelete)) {
-        setImagesToDelete([...imagesToDelete, imageDelete]);
-      } else {
-        setImagesToUpload([
-          imagesToUpload.filter((image) => image !== imageDelete),
-        ]);
+    if (isImageOnServer(imageDelete)) {
+      setImagesToDelete([
+        ...imagesToDelete,
+        getImageFullPathFromUrl(imageDelete),
+      ]);
+      if (images.length === 1) {
+        setCreateNewsDetail({ images: [], ...others });
+        return;
       }
+      setCreateNewsDetail({
+        images: images.filter((image) => image !== imageDelete),
+        ...others,
+      });
+    } else {
+      if (imagesToUpload.length === 1) {
+        setImagesToUpload([]);
+        return;
+      }
+      setImagesToUpload([
+        imagesToUpload.filter((image) => image !== imageDelete),
+      ]);
     }
-    if (images.length === 1) {
-      setCreateNewsDetail({ images: [], ...others });
-      return;
-    }
-
-    setCreateNewsDetail({
-      images: images.filter((image) => image !== imageDelete),
-      ...others,
-    });
   };
 
   //Handle action button
@@ -182,49 +196,57 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
   const updateNews = async () => {
     const crateNewsDetailInValid = getAndUpdateCreateNewsDetailValidate();
     if (!crateNewsDetailInValid) {
-      await updateNewsById(createNewsDetail);
-      setCreateNewsDetail(initCreateNewsDetail);
-      setCreateNewsDatailValidate(initCreateNewsDatailValidate);
-      setNewsToUpdate(null);
-      dispatch(getNews());
+      let imagesUploadedToDelete = [];
+      try {
+        deleteImageUploaded(imagesToDelete);
+        if (imagesToUpload.length) {
+          const { imageRefPath, imageUrlUploaded } = await uploadImages(
+            imagesToUpload,
+            "news-images"
+          );
+          imagesUploadedToDelete = imageRefPath;
+          const { images, ...others } = createNewsDetail;
+          await updateNewsById({
+            images: [...images, ...imageUrlUploaded],
+            ...others,
+          });
+        } else {
+          await updateNewsById(createNewsDetail);
+        }
+
+        setInitData();
+        dispatch(getNews());
+      } catch {
+        deleteImageUploaded(imagesUploadedToDelete);
+        alert("ไม่สามารถแก้ไขข่าวนี้ได้ กรุณาลองใหม่อีกครั้ง");
+      }
     }
   };
-
-  const updateNewsImage = () => {};
 
   const insertNews = async () => {
     const crateNewsDetailInValid = getAndUpdateCreateNewsDetailValidate();
     if (!crateNewsDetailInValid) {
-      let imageUrlUploaded = [];
-      let imageRefPath = [];
       try {
-        const uploadTasks = await uploadNewsImage(createNewsDetail.images);
-        const uploadTaskPromise = uploadTasks.map(async (task) => {
-          await task.then(async (taskResult) => {
-            imageRefPath.push(taskResult.metadata.fullPath);
-            await taskResult.ref.getDownloadURL().then((downloadUrl) => {
-              imageUrlUploaded.push(downloadUrl);
-            });
+        const { imageRefPath, imageUrlUploaded } = await uploadImages(
+          imagesToUpload,
+          "news-images"
+        );
+        const { images, ...others } = createNewsDetail;
+        await createNews({ images: imageUrlUploaded, ...others })
+          .then(() => {
+            setInitData();
+            dispatch(getNews());
+          })
+          .catch(() => {
+            deleteImageUploaded(imageRefPath);
           });
-        });
-
-        Promise.all(uploadTaskPromise).then(async () => {
-          const { images, ...others } = createNewsDetail;
-          await createNews({ images: imageUrlUploaded, ...others })
-            .then(() => {
-              dispatch(getNews());
-              setCreateNewsDatailValidate(initCreateNewsDatailValidate);
-              setCreateNewsDetail(initCreateNewsDetail);
-            })
-            .catch(() => {
-              deleteImageUploaded(imageRefPath);
-            });
-        });
       } catch (error) {
         alert("ไม่สามารถเพิ่มข่าวได้, กรุณาลองใหม่อีกครั้ง");
         setCreateNewsDatailValidate(initCreateNewsDatailValidate);
         setCreateNewsDetail(initCreateNewsDetail);
       }
+    } else {
+      alert("ไม่สามารถเพิ่มข่าวได้ เนื่องจากข้อมูลบางส่วนไม่ครบ");
     }
   };
 
@@ -232,7 +254,11 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
     const titleInValid = createNewsDetail.title === "";
     const tagsInValid = createNewsDetail.tags.length ? false : true;
     const descriptionInValid = createNewsDetail.description === "";
-    const imagesInValid = createNewsDetail.images.length ? false : true;
+    const imagesInValid = imagesToUpload.length
+      ? false
+      : true || createNewsDetail.images.length
+      ? false
+      : true;
     setCreateNewsDatailValidate({
       title: titleInValid,
       tags: tagsInValid,
@@ -247,18 +273,19 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
     setConfirmModalOpen(true);
   };
 
-  const handleConfirmDelete = () => {
-    deleteNewsById(newsToDelete.id);
+  const handleConfirmDelete = async () => {
     setConfirmModalOpen(false);
+    deleteImageUploaded(
+      newsToDelete.images.map((image) => getImageFullPathFromUrl(image))
+    );
+    await deleteNewsById(newsToDelete.id);
+    setInitData();
     dispatch(getNews());
   };
 
   return (
     <>
       <div className="management-card news-manage">
-        {console.log("createNewsDetail: ", createNewsDetail)}
-        {console.log("imagesToUpload: ", imagesToUpload)}
-        {console.log("imagesToDelete: ", imagesToDelete)}
         <div className="row">
           <div className="col title">
             <h3 className="toppick">หัวข้อข่าว</h3>
@@ -357,6 +384,13 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
                   </IconButton>
                 </CardMedia>
               ))}
+              {imagesToUpload.map((image, index) => (
+                <CardMedia image={getImageUrl(image)} key={index}>
+                  <IconButton onClick={() => deleteImage(image)}>
+                    <Icon>clear</Icon>
+                  </IconButton>
+                </CardMedia>
+              ))}
             </GridList>
           </div>
         </div>
@@ -365,12 +399,7 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
             size="small"
             variant="outlined"
             className="brown-yellow-outlined-button"
-            onClick={() => {
-              setCreateNewsDetail(initCreateNewsDetail);
-              setNewsToUpdate(null);
-              setImagesToUpload([]);
-              setImagesToDelete([]);
-            }}
+            onClick={setInitData}
           >
             ยกเลิก
           </Button>
