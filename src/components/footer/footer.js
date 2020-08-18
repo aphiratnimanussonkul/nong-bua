@@ -7,9 +7,16 @@ import PhoneIcon from "@material-ui/icons/Phone";
 import RoomIcon from "@material-ui/icons/Room";
 import MapIcon from "@material-ui/icons/Map";
 import "./footer.scss";
-import { Tooltip } from "@material-ui/core";
+import { Tooltip, Button } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 export default function Footer() {
+  const history = useHistory();
   const isMobile = navigator.userAgent.includes("Mobile");
+
+  const goToLoginPage = () => {
+    history.replace("management/login");
+  };
+
   const handleActionClick = (menu) => {
     switch (menu) {
       case "GOOGLE_MAP":
@@ -63,6 +70,12 @@ export default function Footer() {
             <MapIcon></MapIcon>
             <p>Google Map</p>
           </div>
+          {isMobile ? null : (
+            <div className="login">
+              <div className="vertical-line"></div>
+              <Button onClick={goToLoginPage}>เข้าสู่ระบบ</Button>
+            </div>
+          )}
         </div>
         <div className="line"></div>
         <div className={isMobile ? "copyright mobile" : "copyright"}>

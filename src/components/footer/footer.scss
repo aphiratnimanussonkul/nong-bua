@@ -72,6 +72,22 @@
     align-items: center;
     color: white;
 
+    div.login {
+      height: 176px;
+      display: flex;
+      align-items: center;
+      div.vertical-line {
+        margin-right: 40px;
+        width: 2px;
+        height: 80%;
+        background-color: white;
+      }
+      button.MuiButton-root {
+        color: white;
+        font-size: 1.3em;
+      }
+    }
+
     div.pointer {
       cursor: pointer;
     }
