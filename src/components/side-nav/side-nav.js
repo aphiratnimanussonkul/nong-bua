@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { ListItemText, List, ListItem, Icon } from "@material-ui/core";
+import { ListItemText, List, ListItem, Icon, Divider } from "@material-ui/core";
 import NongBuaLogo from "../../assets/nong-bua-logo.png";
 
 import "./side-nav.scss";
+import { logout } from "../../actions/user";
 
 const SideNav = () => {
   const history = useHistory();
@@ -57,6 +58,11 @@ const SideNav = () => {
     history.push(menus[newValue].link);
   };
 
+  const onLogout = () => {
+    logout();
+    history.replace("/management/login");
+  };
+
   return (
     <div className="side-nav">
       <div className="logo">
@@ -81,6 +87,15 @@ const SideNav = () => {
             </div>
           </>
         ))}
+      </List>
+      <Divider></Divider>
+      <List>
+        <div className="list">
+          <ListItem onClick={onLogout} button>
+            <Icon>exit_to_app</Icon>
+            <ListItemText primary="ออกจากระบบ" />
+          </ListItem>
+        </div>
       </List>
     </div>
   );
