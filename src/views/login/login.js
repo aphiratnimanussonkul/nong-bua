@@ -5,13 +5,21 @@ import "./login.scss";
 import { TextField, Button } from "@material-ui/core";
 import { connect } from "react-redux";
 import { loginWithEmailAndPassword } from "../../actions/user";
-
-const Login = ({ loginFail, dispatch }) => {
+import { useHistory } from "react-router-dom";
+const Login = ({ loginFail, dispatch, userInfo, isAdmin }) => {
+  const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const isEmailPasswordValid = () => {
     return email !== "" && password !== "";
+  };
+
+  const onClickLogin = async () => {
+    await dispatch(loginWithEmailAndPassword({ email, password }));
+    if (userInfo && isAdmin) {
+      history.replace("/management");
+    }
   };
 
   return (
@@ -38,9 +46,7 @@ const Login = ({ loginFail, dispatch }) => {
           variant="outlined"
           disabled={!isEmailPasswordValid()}
           className="green-solid-button login-button"
-          onClick={() =>
-            dispatch(loginWithEmailAndPassword({ email, password }))
-          }
+          onClick={onClickLogin}
         >
           เข้าสู่ระบบ
         </Button>
@@ -56,6 +62,8 @@ const Login = ({ loginFail, dispatch }) => {
 
 const mapStateToProps = (state) => ({
   loginFail: state.userRole.loginFail,
+  userInfo: state.userRole.userInfo,
+  isAdmin: state.userRole.isAdmin,
 });
 
 export default connect(mapStateToProps)(Login);
