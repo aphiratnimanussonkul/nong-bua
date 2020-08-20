@@ -38,7 +38,7 @@ const ConfirmModal = ({ title, descrption, onConfirm, onCancel }) => {
               className="brown-yellow-outlined-button"
               onClick={onConfirm}
             >
-              ลบข่าวนี้
+              ยืนยันการลบ
             </Button>
           </div>
         </div>
