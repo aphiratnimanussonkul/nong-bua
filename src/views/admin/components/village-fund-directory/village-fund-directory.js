@@ -19,20 +19,28 @@ import {
 import "./village-fund-directory.scss";
 import UploadIcon from "../../../../assets/upload.png";
 import {
-  getVillageFundDireactory,
+  getVillageFundDirectory,
   createVillageFundDirectory,
+  deleteDirectoryById,
 } from "../../../../actions/village-fund";
 import Loading from "../../../../components/loading/loading";
 import { connect } from "react-redux";
-import { getImageUrl } from "../../../../helpers/image-url/image-url";
+import {
+  getImageUrl,
+  getImageFullPathFromUrl,
+} from "../../../../helpers/image-url/image-url";
 import {
   uploadImages,
   deleteImageUploaded,
 } from "../../../../actions/upload-image";
+import ConfirmModal from "../../../../components/confirm-modal/confirm-modal";
 
 const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
   const directoryOrders = Array.from(Array(10), (_, i) => i + 1);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
+  //Delete
+  const [directoryToDelete, setDirectoryToDelete] = useState(null);
   const initDirectory = {
     name: "",
     position: "",
@@ -42,7 +50,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
   const [personalDetail, setPersonalDetail] = useState(initDirectory);
 
   useEffect(() => {
-    dispatch(getVillageFundDireactory());
+    dispatch(getVillageFundDirectory());
   }, [dispatch]);
 
   //Table Data
@@ -103,11 +111,23 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
         imageProfile: imageUrlUploaded[0],
       }).then(() => {
         setPersonalDetail(initDirectory);
-        dispatch(getVillageFundDireactory());
+        dispatch(getVillageFundDirectory());
       });
     } catch {
       deleteImageUploaded(imagesUploadedToDelete);
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    setConfirmModalOpen(false);
+    const imageProfilePath = getImageFullPathFromUrl(
+      directoryToDelete.imageProfile,
+      "village-fund-image-profile"
+    );
+    deleteImageUploaded([imageProfilePath]);
+    await deleteDirectoryById(directoryToDelete.id);
+    setPersonalDetail(initDirectory);
+    dispatch(getVillageFundDirectory());
   };
 
   return (
@@ -236,7 +256,12 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
                         >
                           <Icon>create</Icon>
                         </IconButton>
-                        <IconButton>
+                        <IconButton
+                          onClick={() => {
+                            setDirectoryToDelete(row);
+                            setConfirmModalOpen(true);
+                          }}
+                        >
                           <Icon>delete</Icon>
                         </IconButton>
                       </div>
@@ -248,6 +273,23 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
           </TableContainer>
         </div>
       )}
+      {confirmModalOpen ? (
+        <ConfirmModal
+          onCancel={() => setConfirmModalOpen(false)}
+          onConfirm={handleConfirmDelete}
+          title="คุณต้องการลบสมาชิกท่านนี้ ใช่ หรือ ไม่"
+          descrption={[
+            {
+              title: "ชื่อ",
+              detail: directoryToDelete.name,
+            },
+            {
+              title: "ตำแหน่ง",
+              detail: directoryToDelete.position,
+            },
+          ]}
+        ></ConfirmModal>
+      ) : null}
     </>
   );
 };
