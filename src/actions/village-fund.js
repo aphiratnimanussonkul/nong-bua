@@ -11,7 +11,7 @@ export const FETCH_VIILAGE_NEWS_INFORMATION = createActionSet(
   "FETCH_VIILAGE_NEWS_INFORMATION"
 );
 
-export const getVillageFundDireactory = () => async (dispatch) => {
+export const getVillageFundDirectory = () => async (dispatch) => {
   dispatch({ type: FETCH_VIILAGE_FUND_DIRECTORY.PENDDING });
 
   try {
@@ -22,7 +22,12 @@ export const getVillageFundDireactory = () => async (dispatch) => {
       .then((result) => {
         dispatch({
           type: FETCH_VIILAGE_FUND_DIRECTORY.SUCCESS,
-          payload: result.docs.map((data) => data.data()),
+          payload: result.docs.map((data) => {
+            return {
+              id: data.id,
+              ...data.data(),
+            };
+          }),
         });
       });
   } catch (error) {
@@ -86,4 +91,11 @@ export const createVillageFundDirectory = async (personalDetail) => {
   return await firestore
     .collection("village-fund-directory")
     .add(personalDetail);
+};
+
+export const deleteDirectoryById = async (directoryId) => {
+  return await firestore
+    .collection("village-fund-directory")
+    .doc(directoryId)
+    .delete();
 };
