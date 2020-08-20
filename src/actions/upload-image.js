@@ -23,6 +23,8 @@ export const uploadImages = async (images, folderName) => {
 
 export const deleteImageUploaded = (imagePaths) => {
   imagePaths.forEach((path) => {
-    storage.ref(path).delete();
+    try {
+      storage.ref(path).delete();
+    } catch {}
   });
 };
