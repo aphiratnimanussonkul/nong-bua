@@ -39,13 +39,24 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
   const directoryOrders = Array.from(Array(10), (_, i) => i + 1);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
+  //Update
+  const initDirectoryValidate = {
+    name: false,
+    position: false,
+    priority: false,
+    imageProfile: false,
+  };
+  const [directoryValidate, setDirectoryValidate] = useState(
+    initDirectoryValidate
+  );
+
   //Delete
   const [directoryToDelete, setDirectoryToDelete] = useState(null);
   const initDirectory = {
     name: "",
     position: "",
     imageProfile: null,
-    priority: 0,
+    priority: null,
   };
   const [personalDetail, setPersonalDetail] = useState(initDirectory);
 
@@ -96,25 +107,44 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
     });
   };
 
+  const getAndUpdateDirectoryValidate = () => {
+    const titleInvalid = personalDetail.title === "";
+    const positionInvalid = personalDetail.position === "";
+    const priorityInvalid = personalDetail.priority === null;
+    const imageProfileInvalid = personalDetail.imageProfile === null;
+    setDirectoryValidate({
+      name: titleInvalid,
+      position: positionInvalid,
+      priority: priorityInvalid,
+      imageProfile: imageProfileInvalid,
+    });
+    return (
+      titleInvalid || positionInvalid || priorityInvalid || imageProfileInvalid
+    );
+  };
+
   //Handle actions button
   const onClickCreateDirectory = async () => {
-    let imagesUploadedToDelete = [];
-    try {
-      const { imageRefPath, imageUrlUploaded } = await uploadImages(
-        [personalDetail.imageProfile],
-        "village-fund-image-profile"
-      );
-      imagesUploadedToDelete = imageRefPath;
-      const { imageProfile, ...others } = personalDetail;
-      await createVillageFundDirectory({
-        ...others,
-        imageProfile: imageUrlUploaded[0],
-      }).then(() => {
-        setPersonalDetail(initDirectory);
-        dispatch(getVillageFundDirectory());
-      });
-    } catch {
-      deleteImageUploaded(imagesUploadedToDelete);
+    const directortyInvalid = getAndUpdateDirectoryValidate();
+    if (!directortyInvalid) {
+      let imagesUploadedToDelete = [];
+      try {
+        const { imageRefPath, imageUrlUploaded } = await uploadImages(
+          [personalDetail.imageProfile],
+          "village-fund-image-profile"
+        );
+        imagesUploadedToDelete = imageRefPath;
+        const { imageProfile, ...others } = personalDetail;
+        await createVillageFundDirectory({
+          ...others,
+          imageProfile: imageUrlUploaded[0],
+        }).then(() => {
+          setPersonalDetail(initDirectory);
+          dispatch(getVillageFundDirectory());
+        });
+      } catch {
+        deleteImageUploaded(imagesUploadedToDelete);
+      }
     }
   };
 
@@ -137,6 +167,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
           <div className="col">
             <h3 className="toppick">ชื่อ - นามสกุล</h3>
             <TextField
+              error={directoryValidate.name}
               value={personalDetail.name}
               onChange={onNameInputChange}
               label="ชื่อ - นามสกุล"
@@ -147,6 +178,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
           <div className="col">
             <h3 className="toppick">ตำแหน่ง</h3>
             <TextField
+              error={directoryValidate.position}
               value={personalDetail.position}
               onChange={onPositionInputChange}
               label="ตำแหน่ง"
@@ -158,6 +190,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
             <h3 className="toppick">ลำดับการแสดง</h3>
             <FormControl variant="outlined">
               <Select
+                error={directoryValidate.priority}
                 variant="outlined"
                 value={personalDetail.priority}
                 onChange={handleOrdersChange}
@@ -236,7 +269,6 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
               <TableBody>
                 {directories.map((row, index) => (
                   <TableRow key={row.name}>
-                    {console.log(personalDetail)}
                     <TableCell align="center">{index + 1}</TableCell>
                     <TableCell align="left">{row.name}</TableCell>
                     <TableCell align="left">{row.position}</TableCell>
