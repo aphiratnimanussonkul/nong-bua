@@ -99,3 +99,11 @@ export const deleteDirectoryById = async (directoryId) => {
     .doc(directoryId)
     .delete();
 };
+
+export const updateDirectoryById = async (directory) => {
+  const { id, ...others } = directory;
+  return await firestore
+    .collection("village-fund-directory")
+    .doc(id)
+    .set(others);
+};
