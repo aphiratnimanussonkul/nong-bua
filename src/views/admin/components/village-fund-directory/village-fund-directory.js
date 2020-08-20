@@ -22,6 +22,7 @@ import {
   getVillageFundDireactory,
   createVillageFundDirectory,
 } from "../../../../actions/village-fund";
+import Loading from "../../../../components/loading/loading";
 import { connect } from "react-redux";
 import { getImageUrl } from "../../../../helpers/image-url/image-url";
 import {
@@ -29,7 +30,7 @@ import {
   deleteImageUploaded,
 } from "../../../../actions/upload-image";
 
-const VillageFundDirectory = ({ dispatch, directories }) => {
+const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
   const directoryOrders = Array.from(Array(10), (_, i) => i + 1);
 
   const initDirectory = {
@@ -116,6 +117,7 @@ const VillageFundDirectory = ({ dispatch, directories }) => {
           <div className="col">
             <h3 className="toppick">ชื่อ - นามสกุล</h3>
             <TextField
+              value={personalDetail.name}
               onChange={onNameInputChange}
               label="ชื่อ - นามสกุล"
               type="text"
@@ -125,6 +127,7 @@ const VillageFundDirectory = ({ dispatch, directories }) => {
           <div className="col">
             <h3 className="toppick">ตำแหน่ง</h3>
             <TextField
+              value={personalDetail.position}
               onChange={onPositionInputChange}
               label="ตำแหน่ง"
               type="text"
@@ -194,50 +197,63 @@ const VillageFundDirectory = ({ dispatch, directories }) => {
           </Button>
         </div>
       </div>
-      <div className="village-fund-directory-table management-card">
-        <h3 className="toppick">ทำเนียบคณะกรรมการกองทุนหมู่บ้าน</h3>
-        <TableContainer component={Paper}>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                {headers.map((header, index) => (
-                  <TableCell align={header.align} key={index}>
-                    {header.name}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {directories.map((row, index) => (
-                <TableRow key={row.name}>
-                  <TableCell align="center">{index + 1}</TableCell>
-                  <TableCell align="left">{row.name}</TableCell>
-                  <TableCell align="left">{row.position}</TableCell>
-                  <TableCell align="center">
-                    <CardMedia image={row.imageProfile} key={index}></CardMedia>
-                  </TableCell>
-                  <TableCell align="center">{row.priority}</TableCell>
-                  <TableCell align="right">
-                    <div className="action-buttons">
-                      <IconButton>
-                        <Icon>create</Icon>
-                      </IconButton>
-                      <IconButton>
-                        <Icon>delete</Icon>
-                      </IconButton>
-                    </div>
-                  </TableCell>
+      {isLoading ? (
+        <Loading></Loading>
+      ) : (
+        <div className="village-fund-directory-table management-card">
+          <h3 className="toppick">ทำเนียบคณะกรรมการกองทุนหมู่บ้าน</h3>
+          <TableContainer component={Paper}>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  {headers.map((header, index) => (
+                    <TableCell align={header.align} key={index}>
+                      {header.name}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
+              </TableHead>
+              <TableBody>
+                {directories.map((row, index) => (
+                  <TableRow key={row.name}>
+                    {console.log(personalDetail)}
+                    <TableCell align="center">{index + 1}</TableCell>
+                    <TableCell align="left">{row.name}</TableCell>
+                    <TableCell align="left">{row.position}</TableCell>
+                    <TableCell align="center">
+                      <CardMedia
+                        image={row.imageProfile}
+                        key={index}
+                      ></CardMedia>
+                    </TableCell>
+                    <TableCell align="center">{row.priority}</TableCell>
+                    <TableCell align="right">
+                      <div className="action-buttons">
+                        <IconButton
+                          onClick={() => {
+                            setPersonalDetail(row);
+                          }}
+                        >
+                          <Icon>create</Icon>
+                        </IconButton>
+                        <IconButton>
+                          <Icon>delete</Icon>
+                        </IconButton>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      )}
     </>
   );
 };
 
 const mapStateToProps = (state) => ({
   directories: state.villageFund.directories,
+  isLoading: state.villageFund.isLoading,
 });
 export default connect(mapStateToProps)(VillageFundDirectory);
