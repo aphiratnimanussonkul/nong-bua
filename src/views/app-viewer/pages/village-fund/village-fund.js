@@ -6,7 +6,7 @@ import { GridList } from "@material-ui/core";
 import { connect } from "react-redux";
 
 import {
-  getVillageFundDireactory,
+  getVillageFundDirectory,
   getVillageProject,
   getVillageNewsInformation,
 } from "../../../../actions/village-fund";
@@ -15,7 +15,7 @@ import "./village-fund.scss";
 
 const VillageFund = ({ dispatch, directories, projects, newsInformation }) => {
   useEffect(() => {
-    dispatch(getVillageFundDireactory());
+    dispatch(getVillageFundDirectory());
     dispatch(getVillageProject());
     dispatch(getVillageNewsInformation());
   }, [dispatch]);

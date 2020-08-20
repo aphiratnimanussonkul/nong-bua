@@ -277,7 +277,7 @@ export const FETCH_VIILAGE_FUND_DIRECTORY = createActionSet(
   "FETCH_VIILAGE_FUND_DIRECTORY"
 );
 
-export const getVillageFundDireactory = () => async (dispatch) => {
+export const getVillageFundDirectory = () => async (dispatch) => {
   dispatch({ type: FETCH_VIILAGE_FUND_DIRECTORY.PENDDING });
 
   try {
@@ -304,7 +304,7 @@ export const getVillageFundDireactory = () => async (dispatch) => {
 ```javascript
 const VillageFund = ({ dispatch, directory }) => {
   useEffect(() => {
-    dispatch(getVillageFundDireactory());
+    dispatch(getVillageFundDirectory());
   }, [dispatch]);
 };
 
