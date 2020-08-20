@@ -9,6 +9,7 @@ export const initState = {
   projects: [],
   newsInformation: [],
   error: null,
+  isLoading: true,
 };
 
 export default (state = initState, { type, payload, error }) => {
@@ -16,20 +17,26 @@ export default (state = initState, { type, payload, error }) => {
     case (FETCH_VIILAGE_FUND_DIRECTORY.PENDDING,
     FETCH_VIILAGE_PROJECT.PENDDING,
     FETCH_VIILAGE_NEWS_INFORMATION.PENDDING):
-      return state;
+      return {
+        ...state,
+        isLoading: true,
+      };
     case FETCH_VIILAGE_FUND_DIRECTORY.SUCCESS:
       return {
         ...state,
         directories: payload,
+        isLoading: false,
       };
     case FETCH_VIILAGE_PROJECT.SUCCESS:
       return {
         ...state,
+        isLoading: false,
         projects: payload,
       };
     case FETCH_VIILAGE_NEWS_INFORMATION.SUCCESS:
       return {
         ...state,
+        isLoading: false,
         newsInformation: payload,
       };
     case (FETCH_VIILAGE_FUND_DIRECTORY.FAILED,
@@ -38,6 +45,7 @@ export default (state = initState, { type, payload, error }) => {
       return {
         ...state,
         error,
+        isLoading: false,
       };
 
     default:
