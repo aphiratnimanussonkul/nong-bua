@@ -22,6 +22,7 @@ import {
   getVillageFundDirectory,
   createVillageFundDirectory,
   deleteDirectoryById,
+  updateDirectoryById,
 } from "../../../../actions/village-fund";
 import Loading from "../../../../components/loading/loading";
 import { connect } from "react-redux";
@@ -39,7 +40,6 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
   const directoryOrders = Array.from(Array(10), (_, i) => i + 1);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
-  //Update
   const initDirectoryValidate = {
     name: false,
     position: false,
@@ -49,6 +49,9 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
   const [directoryValidate, setDirectoryValidate] = useState(
     initDirectoryValidate
   );
+
+  //Update
+  const [personalDetailToUpdate, setPersonalDetailToUpdate] = useState(null);
 
   //Delete
   const [directoryToDelete, setDirectoryToDelete] = useState(null);
@@ -124,40 +127,81 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
   };
 
   //Handle actions button
-  const onClickCreateDirectory = async () => {
+  const onClickSaveButton = async () => {
     const directortyInvalid = getAndUpdateDirectoryValidate();
     if (!directortyInvalid) {
-      let imagesUploadedToDelete = [];
-      try {
+      if (personalDetailToUpdate) {
+        await updateDirectory();
+      } else {
+        await createDirectory();
+      }
+      setPersonalDetail(initDirectory);
+      setPersonalDetailToUpdate(null);
+      dispatch(getVillageFundDirectory());
+    }
+  };
+
+  const updateDirectory = async () => {
+    let imagesUploadedToDelete = [];
+    try {
+      if (personalDetailToUpdate.imageProfile !== personalDetail.imageProfile) {
         const { imageRefPath, imageUrlUploaded } = await uploadImages(
           [personalDetail.imageProfile],
           "village-fund-image-profile"
         );
         imagesUploadedToDelete = imageRefPath;
         const { imageProfile, ...others } = personalDetail;
-        await createVillageFundDirectory({
-          ...others,
+        await updateDirectoryById({
           imageProfile: imageUrlUploaded[0],
-        }).then(() => {
-          setPersonalDetail(initDirectory);
-          dispatch(getVillageFundDirectory());
+          ...others,
         });
-      } catch {
-        deleteImageUploaded(imagesUploadedToDelete);
+        deleteImageUploaded([
+          getImageFullPathFromUrl(
+            personalDetailToUpdate.imageProfile,
+            "village-fund-image-profile"
+          ),
+        ]);
+      } else {
+        await updateDirectoryById(personalDetail);
       }
+    } catch (error) {
+      alert("ไม่สามารถแก้ไขข้อมูลสมาชิกได้, กรุณาลองอีกครั้ง");
+      deleteImageUploaded(imagesUploadedToDelete);
+    }
+  };
+
+  const createDirectory = async () => {
+    let imagesUploadedToDelete = [];
+    try {
+      const { imageRefPath, imageUrlUploaded } = await uploadImages(
+        [personalDetail.imageProfile],
+        "village-fund-image-profile"
+      );
+      imagesUploadedToDelete = imageRefPath;
+      const { imageProfile, ...others } = personalDetail;
+      await createVillageFundDirectory({
+        ...others,
+        imageProfile: imageUrlUploaded[0],
+      }).catch(() => {
+        deleteImageUploaded(imagesUploadedToDelete);
+      });
+    } catch {
+      deleteImageUploaded(imagesUploadedToDelete);
     }
   };
 
   const handleConfirmDelete = async () => {
     setConfirmModalOpen(false);
-    const imageProfilePath = getImageFullPathFromUrl(
-      directoryToDelete.imageProfile,
-      "village-fund-image-profile"
-    );
-    deleteImageUploaded([imageProfilePath]);
-    await deleteDirectoryById(directoryToDelete.id);
-    setPersonalDetail(initDirectory);
-    dispatch(getVillageFundDirectory());
+    try {
+      const imageProfilePath = getImageFullPathFromUrl(
+        directoryToDelete.imageProfile,
+        "village-fund-image-profile"
+      );
+      deleteImageUploaded([imageProfilePath]);
+      await deleteDirectoryById(directoryToDelete.id);
+      setPersonalDetail(initDirectory);
+      dispatch(getVillageFundDirectory());
+    } catch {}
   };
 
   return (
@@ -244,7 +288,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
             size="small"
             variant="outlined"
             className="green-solid-button"
-            onClick={onClickCreateDirectory}
+            onClick={onClickSaveButton}
           >
             บันทึก
           </Button>
@@ -284,6 +328,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
                         <IconButton
                           onClick={() => {
                             setPersonalDetail(row);
+                            setPersonalDetailToUpdate(row);
                           }}
                         >
                           <Icon>create</Icon>
