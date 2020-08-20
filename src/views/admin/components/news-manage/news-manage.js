@@ -38,6 +38,7 @@ import {
   deleteImageUploaded,
 } from "../../../../actions/upload-image";
 import ConfirmModal from "../../../../components/confirm-modal/confirm-modal";
+import { getImageUrl } from "../../../../helpers/image-url/image-url";
 
 const NewsManage = ({ dispatch, news, isLoading }) => {
   useEffect(() => {
@@ -105,14 +106,6 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
   
   const isImagesHaveFour = () => {
     return createNewsDetail.images.length + imagesToUpload.length >= 4;
-  };
-
-  const getImageUrl = (image) => {
-    try {
-      return URL.createObjectURL(image);
-    } catch {
-      return image;
-    }
   };
 
   const isImageOnServer = (image) => {
