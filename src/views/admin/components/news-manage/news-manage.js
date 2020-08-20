@@ -38,7 +38,10 @@ import {
   deleteImageUploaded,
 } from "../../../../actions/upload-image";
 import ConfirmModal from "../../../../components/confirm-modal/confirm-modal";
-import { getImageUrl } from "../../../../helpers/image-url/image-url";
+import {
+  getImageUrl,
+  getImageFullPathFromUrl,
+} from "../../../../helpers/image-url/image-url";
 
 const NewsManage = ({ dispatch, news, isLoading }) => {
   useEffect(() => {
@@ -103,7 +106,7 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
     setImagesToUpload([]);
     setImagesToDelete([]);
   };
-  
+
   const isImagesHaveFour = () => {
     return createNewsDetail.images.length + imagesToUpload.length >= 4;
   };
@@ -115,13 +118,6 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
     } catch {
       return true;
     }
-  };
-
-  const getImageFullPathFromUrl = (imageUrl) => {
-    const indexSubStr = imageUrl.indexOf("news-images");
-    const iamgePathLenght = imageUrl.indexOf("?alt") - indexSubStr;
-    const imagePath = imageUrl.substr(indexSubStr, iamgePathLenght);
-    return decodeURIComponent(imagePath);
   };
 
   //Set data to create news
@@ -156,7 +152,7 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
     if (isImageOnServer(imageDelete)) {
       setImagesToDelete([
         ...imagesToDelete,
-        getImageFullPathFromUrl(imageDelete),
+        getImageFullPathFromUrl(imageDelete, "news-images"),
       ]);
       if (images.length === 1) {
         setCreateNewsDetail({ images: [], ...others });
@@ -269,7 +265,9 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
   const handleConfirmDelete = async () => {
     setConfirmModalOpen(false);
     deleteImageUploaded(
-      newsToDelete.images.map((image) => getImageFullPathFromUrl(image))
+      newsToDelete.images.map((image) =>
+        getImageFullPathFromUrl(image, "news-images")
+      )
     );
     await deleteNewsById(newsToDelete.id);
     setInitData();
