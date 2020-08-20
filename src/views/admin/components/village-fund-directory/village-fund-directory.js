@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   FormControl,
@@ -18,42 +18,95 @@ import {
 } from "@material-ui/core";
 import "./village-fund-directory.scss";
 import UploadIcon from "../../../../assets/upload.png";
+import {
+  getVillageFundDireactory,
+  createVillageFundDirectory,
+} from "../../../../actions/village-fund";
+import { connect } from "react-redux";
+import { getImageUrl } from "../../../../helpers/image-url/image-url";
+import {
+  uploadImages,
+  deleteImageUploaded,
+} from "../../../../actions/upload-image";
 
-const VillageFundDirectory = () => {
+const VillageFundDirectory = ({ dispatch, directories }) => {
   const directoryOrders = Array.from(Array(10), (_, i) => i + 1);
-  const [order, setOrder] = useState(null);
-  const [imageProfile, setImageProfile] = useState(null);
+
+  const initDirectory = {
+    name: "",
+    position: "",
+    imageProfile: null,
+    priority: 0,
+  };
+  const [personalDetail, setPersonalDetail] = useState(initDirectory);
+
+  useEffect(() => {
+    dispatch(getVillageFundDireactory());
+  }, [dispatch]);
 
   //Table Data
-  const createData = (name, position, imageProfile) => {
-    return { name, position, imageProfile };
-  };
-  const imageUrl =
-    "https://i.ytimg.com/vi/8OcC_b0FJdI/hq720_live.jpg?sqp=CMiM0PkF-oaymwEZCNAFEJQDSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLBqafv9DwYFiB4L835jEbGJbZ4qtw";
   const headers = [
     { name: "ลำดับที่", align: "center" },
     { name: "ชื่อ - นามสกุล", align: "left" },
     { name: "ตำแหน่ง", align: "left" },
     { name: "รูปภาพโปรไฟล์", align: "center" },
+    { name: "ลำดับการแสดง", align: "center" },
     { name: "แก้ไข / ลบ", align: "right" },
   ];
-  const rows = [
-    createData("Frozen yoghurt", "Mon 03 Jul 2020", imageUrl),
-    createData("Frozen yoghurt", "Mon 03 Jul 2020", imageUrl),
-    createData(" yoghurt", "Mon 03 Jul 2020", imageUrl),
-    createData("Frozen asdadadadad", "Mon 03 Jul 2020", imageUrl),
-  ];
+
+  //Handle input change
+  const onNameInputChange = (event) => {
+    const { name, ...other } = personalDetail;
+    setPersonalDetail({
+      name: event.target.value,
+      ...other,
+    });
+  };
+
+  const onPositionInputChange = (event) => {
+    const { position, ...other } = personalDetail;
+    setPersonalDetail({
+      position: event.target.value,
+      ...other,
+    });
+  };
 
   const handleOrdersChange = (event) => {
-    setOrder(event.target.value);
+    const { priority, ...other } = personalDetail;
+    setPersonalDetail({
+      priority: event.target.value,
+      ...other,
+    });
   };
 
   const handleChooseImageProfile = (event) => {
-    setImageProfile(event.target.files[0]);
+    const { imageProfile, ...other } = personalDetail;
+    setPersonalDetail({
+      imageProfile: event.target.files[0],
+      ...other,
+    });
   };
 
-  const createUrlImage = () => {
-    return URL.createObjectURL(imageProfile);
+  //Handle actions button
+  const onClickCreateDirectory = async () => {
+    let imagesUploadedToDelete = [];
+    try {
+      const { imageRefPath, imageUrlUploaded } = await uploadImages(
+        [personalDetail.imageProfile],
+        "village-fund-image-profile"
+      );
+      imagesUploadedToDelete = imageRefPath;
+      const { imageProfile, ...others } = personalDetail;
+      await createVillageFundDirectory({
+        ...others,
+        imageProfile: imageUrlUploaded[0],
+      }).then(() => {
+        setPersonalDetail(initDirectory);
+        dispatch(getVillageFundDireactory());
+      });
+    } catch {
+      deleteImageUploaded(imagesUploadedToDelete);
+    }
   };
 
   return (
@@ -62,18 +115,28 @@ const VillageFundDirectory = () => {
         <div className="row name-position-sort">
           <div className="col">
             <h3 className="toppick">ชื่อ - นามสกุล</h3>
-            <TextField label="ชื่อ - นามสกุล" type="text" variant="outlined" />
+            <TextField
+              onChange={onNameInputChange}
+              label="ชื่อ - นามสกุล"
+              type="text"
+              variant="outlined"
+            />
           </div>
           <div className="col">
             <h3 className="toppick">ตำแหน่ง</h3>
-            <TextField label="ตำแหน่ง" type="text" variant="outlined" />
+            <TextField
+              onChange={onPositionInputChange}
+              label="ตำแหน่ง"
+              type="text"
+              variant="outlined"
+            />
           </div>
           <div className="col">
             <h3 className="toppick">ลำดับการแสดง</h3>
             <FormControl variant="outlined">
               <Select
                 variant="outlined"
-                value={order}
+                value={personalDetail.priority}
                 onChange={handleOrdersChange}
               >
                 {directoryOrders.map((order) => (
@@ -103,10 +166,13 @@ const VillageFundDirectory = () => {
               </div>
             </label>
           </div>
-          {imageProfile !== null && imageProfile !== undefined ? (
+          {personalDetail.imageProfile !== null &&
+          personalDetail.imageProfile !== undefined ? (
             <div className="col">
               <h3 className="toppick">ภาพโปรไฟล์ที่เลือก</h3>
-              <CardMedia image={createUrlImage()}></CardMedia>
+              <CardMedia
+                image={getImageUrl(personalDetail.imageProfile)}
+              ></CardMedia>
             </div>
           ) : null}
         </div>
@@ -122,6 +188,7 @@ const VillageFundDirectory = () => {
             size="small"
             variant="outlined"
             className="green-solid-button"
+            onClick={onClickCreateDirectory}
           >
             บันทึก
           </Button>
@@ -141,7 +208,7 @@ const VillageFundDirectory = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row, index) => (
+              {directories.map((row, index) => (
                 <TableRow key={row.name}>
                   <TableCell align="center">{index + 1}</TableCell>
                   <TableCell align="left">{row.name}</TableCell>
@@ -149,6 +216,7 @@ const VillageFundDirectory = () => {
                   <TableCell align="center">
                     <CardMedia image={row.imageProfile} key={index}></CardMedia>
                   </TableCell>
+                  <TableCell align="center">{row.priority}</TableCell>
                   <TableCell align="right">
                     <div className="action-buttons">
                       <IconButton>
@@ -168,4 +236,8 @@ const VillageFundDirectory = () => {
     </>
   );
 };
-export default VillageFundDirectory;
+
+const mapStateToProps = (state) => ({
+  directories: state.villageFund.directories,
+});
+export default connect(mapStateToProps)(VillageFundDirectory);

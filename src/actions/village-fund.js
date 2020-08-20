@@ -81,3 +81,9 @@ export const getVillageNewsInformation = () => async (dispatch) => {
     dispatch({ type: FETCH_VIILAGE_NEWS_INFORMATION.FAILED, error });
   }
 };
+
+export const createVillageFundDirectory = async (personalDetail) => {
+  return await firestore
+    .collection("village-fund-directory")
+    .add(personalDetail);
+};
