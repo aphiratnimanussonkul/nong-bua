@@ -48,7 +48,12 @@ export const getVillageProject = () => async (dispatch) => {
       .then((result) => {
         dispatch({
           type: FETCH_VIILAGE_PROJECT.SUCCESS,
-          payload: result.docs.map((data) => data.data()),
+          payload: result.docs.map((data) => {
+            return {
+              id: data.id,
+              ...data.data(),
+            };
+          }),
         });
       });
   } catch (error) {
@@ -106,4 +111,21 @@ export const updateDirectoryById = async (directory) => {
     .collection("village-fund-directory")
     .doc(id)
     .set(others);
+};
+
+export const createVillageFundProject = async (projectName) => {
+  return await firestore
+    .collection("village-project")
+    .add({ name: projectName });
+};
+
+export const deleteVillageProjectById = async (projectId) => {
+  return await firestore.collection("village-project").doc(projectId).delete();
+};
+
+export const updateVillgeFundProject = async (project) => {
+  return await firestore
+    .collection("village-project")
+    .doc(project.id)
+    .set({ name: project.name });
 };
