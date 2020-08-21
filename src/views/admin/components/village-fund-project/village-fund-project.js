@@ -18,6 +18,7 @@ import {
   getVillageProject,
   createVillageFundProject,
   deleteVillageProjectById,
+  updateVillageFundProject,
 } from "../../../../actions/village-fund";
 import ConfirmModal from "../../../../components/confirm-modal/confirm-modal";
 import { connect } from "react-redux";
@@ -35,6 +36,7 @@ const VillageFundPorject = ({ dispatch, isLoading, projects }) => {
   const [projectName, setProjectName] = useState("");
   const [projectNameInValid, setProjectNameInValid] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
+  const [projectToUpdate, setProjectToUpdate] = useState(null);
 
   useEffect(() => {
     dispatch(getVillageProject());
@@ -48,6 +50,7 @@ const VillageFundPorject = ({ dispatch, isLoading, projects }) => {
     setProjectNameInValid(false);
     setProjectName("");
     setProjectToDelete(null);
+    setProjectToUpdate(null);
     dispatch(getVillageProject());
   };
 
@@ -55,20 +58,41 @@ const VillageFundPorject = ({ dispatch, isLoading, projects }) => {
     const isProjectNameEmpty = projectName === null || projectName === "";
     setProjectNameInValid(isProjectNameEmpty);
     if (!isProjectNameEmpty) {
-      try {
-        createVillageFundProject(projectName)
-          .then(() => {
-            setInitData();
-          })
-          .catch(() => alert("ไม่สามารถเพิ่มโครงการได้, กรุณาลองใหม่อีกครั้ง"));
-      } catch {
-        alert("ไม่สามารถเพิ่มโครงการได้, กรุณาลองใหม่อีกครั้ง");
+      if (projectToUpdate) {
+        updateProject();
+      } else {
+        createProject();
       }
     }
   };
 
+  const updateProject = async () => {
+    try {
+      await updateVillageFundProject({
+        name: projectName,
+        id: projectToUpdate.id,
+      })
+        .then(() => setInitData())
+        .catch(() => alert("ไม่สามารถแก้ไขโครงการได้, กรุณาลองใหม่อีกครั้ง"));
+    } catch {
+      alert("ไม่สามารถแก้ไขโครงการได้, กรุณาลองใหม่อีกครั้ง");
+    }
+  };
+
+  const createProject = () => {
+    try {
+      createVillageFundProject(projectName)
+        .then(() => {
+          setInitData();
+        })
+        .catch(() => alert("ไม่สามารถเพิ่มโครงการได้, กรุณาลองใหม่อีกครั้ง"));
+    } catch {
+      alert("ไม่สามารถเพิ่มโครงการได้, กรุณาลองใหม่อีกครั้ง");
+    }
+  };
+
   const onConfirmDeleteProject = () => {
-    setConfirmModalOpen(false)
+    setConfirmModalOpen(false);
     try {
       deleteVillageProjectById(projectToDelete.id)
         .then(() => setInitData())
@@ -140,7 +164,12 @@ const VillageFundPorject = ({ dispatch, isLoading, projects }) => {
                     <TableCell align="left">โครงการ {row.name}</TableCell>
                     <TableCell align="right">
                       <div className="action-buttons">
-                        <IconButton>
+                        <IconButton
+                          onClick={() => {
+                            setProjectName(row.name);
+                            setProjectToUpdate(row);
+                          }}
+                        >
                           <Icon>create</Icon>
                         </IconButton>
                         <IconButton
