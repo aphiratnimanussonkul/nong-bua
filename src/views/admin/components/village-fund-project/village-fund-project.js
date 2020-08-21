@@ -124,6 +124,7 @@ const VillageFundPorject = ({ dispatch, isLoading, projects }) => {
           </div>
           <div className="col action-button">
             <Button
+              onClick={setInitData}
               size="small"
               variant="outlined"
               className="brown-yellow-outlined-button"
