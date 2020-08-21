@@ -6,8 +6,8 @@ const { firestore } = firebase;
 export const FETCH_VILLAGE_HEALTH_VOLUNTEER_NEWS = createActionSet(
   "FETCH_VILLAGE_HEALTH_VOLUNTEER_NEWS"
 );
-export const FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORT = createActionSet(
-  "FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORT"
+export const FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORY = createActionSet(
+  "FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORY"
 );
 export const FETCH_VILLAGE_STATIC = createActionSet("FETCH_VILLAGE_STATIC");
 
@@ -40,7 +40,7 @@ export const getVillageHealthVolunteerNews = () => async (dispatch) => {
 };
 
 export const getVillageHealthVolunteerDirectory = () => async (dispatch) => {
-  dispatch({ type: FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORT.PENDDING });
+  dispatch({ type: FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORY.PENDDING });
 
   try {
     await firestore
@@ -49,7 +49,7 @@ export const getVillageHealthVolunteerDirectory = () => async (dispatch) => {
       .get()
       .then((result) => {
         dispatch({
-          type: FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORT.SUCCESS,
+          type: FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORY.SUCCESS,
           payload: result.docs.map((data) => {
             return {
               id: data.id,
@@ -59,7 +59,7 @@ export const getVillageHealthVolunteerDirectory = () => async (dispatch) => {
         });
       });
   } catch (error) {
-    dispatch({ type: FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORT.FAILED });
+    dispatch({ type: FETCH_VILLAGE_HEALTH_VOLUNTEER_DIRECTORY.FAILED });
   }
 };
 
@@ -83,14 +83,14 @@ export const getVillageStatic = () => async (dispatch) => {
 
 export const createVillageHealthVolunteer = async (villgeHealthVolunteer) => {
   return await firestore
-    .collection("village-health-volunteer")
+    .collection("village-health-volunteer-directory")
     .add(villgeHealthVolunteer);
 };
 
 export const updateVillageHealthVolunteer = async (villgeHealthVolunteer) => {
   const { id, ...others } = villgeHealthVolunteer;
   return await firestore
-    .collection("village-health-volunteer")
+    .collection("village-health-volunteer-directory")
     .doc(id)
     .set(others);
 };
@@ -99,7 +99,7 @@ export const deleteVillageHealthVolunteerById = async (
   villageHealthVolunteerId
 ) => {
   return await firestore
-    .collection("village-health-volunteer")
+    .collection("village-health-volunteer-directory")
     .doc(villageHealthVolunteerId)
     .delete();
 };
