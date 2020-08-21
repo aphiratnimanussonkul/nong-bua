@@ -164,7 +164,7 @@ const VillageFundPorject = ({ dispatch, isLoading, projects }) => {
         <ConfirmModal
           onCancel={() => setConfirmModalOpen(false)}
           onConfirm={onConfirmDeleteProject}
-          title="คุณต้องการลบสมาชิกท่านนี้ ใช่ หรือ ไม่"
+          title="คุณต้องการลบโครงการนี้ ใช่ หรือ ไม่"
           descrption={[
             {
               title: "ชื่อโครงการ",
