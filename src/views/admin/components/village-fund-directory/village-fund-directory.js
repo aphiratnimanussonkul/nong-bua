@@ -189,9 +189,11 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
         ...others,
         imageProfile: imageUrlUploaded[0],
       }).catch(() => {
+        alert("ไม่สามารถเพิ่มสมาชิกได้, กรุณาลองอีกครั้ง");
         deleteImageUploaded(imagesUploadedToDelete);
       });
     } catch {
+      alert("ไม่สามารถเพิ่มสมาชิกได้, กรุณาลองอีกครั้ง");
       deleteImageUploaded(imagesUploadedToDelete);
     }
   };
