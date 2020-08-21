@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   FormControl,
@@ -18,18 +18,10 @@ import {
 } from "@material-ui/core";
 import "./village-health-volunteer-directory.scss";
 import UploadIcon from "../../../../assets/upload.png";
-
-const VillageHealthVolunteerDirectory = () => {
+import { connect } from "react-redux";
+import { getVillageHealthVolunteerDirectory } from "../../../../actions/village-health-volunteer";
+const VillageHealthVolunteerDirectory = ({ dispatch, directories }) => {
   const directoryOrders = Array.from(Array(15), (_, i) => i + 1);
-  const [order, setOrder] = useState(null);
-  const [imageProfile, setImageProfile] = useState(null);
-
-  //Table Data
-  const createData = (name, position, imageProfile) => {
-    return { name, position, imageProfile };
-  };
-  const imageUrl =
-    "https://i.ytimg.com/vi/8OcC_b0FJdI/hq720_live.jpg?sqp=CMiM0PkF-oaymwEZCNAFEJQDSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLBqafv9DwYFiB4L835jEbGJbZ4qtw";
   const headers = [
     { name: "ลำดับที่", align: "center" },
     { name: "ชื่อ - นามสกุล", align: "left" },
@@ -37,24 +29,28 @@ const VillageHealthVolunteerDirectory = () => {
     { name: "รูปภาพโปรไฟล์", align: "center" },
     { name: "แก้ไข / ลบ", align: "right" },
   ];
-  const rows = [
-    createData("Frozen yoghurt", "Mon 03 Jul 2020", imageUrl),
-    createData("Frozen yoghurt", "Mon 03 Jul 2020", imageUrl),
-    createData(" yoghurt", "Mon 03 Jul 2020", imageUrl),
-    createData("Frozen asdadadadad", "Mon 03 Jul 2020", imageUrl),
-  ];
 
-  const handleOrdersChange = (event) => {
-    setOrder(event.target.value);
+  const initDirectory = {
+    name: "",
+    position: "",
+    imageProfile: null,
+    priority: null,
   };
+  const [personalDetail, setPersonalDetail] = useState(initDirectory);
 
-  const handleChooseImageProfile = (event) => {
-    setImageProfile(event.target.files[0]);
+  const initDirectoryValidate = {
+    name: false,
+    position: false,
+    priority: false,
+    imageProfile: false,
   };
+  const [directoryValidate, setDirectoryValidate] = useState(
+    initDirectoryValidate
+  );
 
-  const createUrlImage = () => {
-    return URL.createObjectURL(imageProfile);
-  };
+  useEffect(() => {
+    dispatch(getVillageHealthVolunteerDirectory());
+  }, [dispatch]);
 
   return (
     <>
@@ -73,8 +69,8 @@ const VillageHealthVolunteerDirectory = () => {
             <FormControl variant="outlined">
               <Select
                 variant="outlined"
-                value={order}
-                onChange={handleOrdersChange}
+                value={personalDetail.priority}
+                // onChange={handleOrdersChange}
               >
                 {directoryOrders.map((order) => (
                   <MenuItem key={order} value={order}>
@@ -89,7 +85,7 @@ const VillageHealthVolunteerDirectory = () => {
           <div className="col">
             <h3 className="toppick">ภาพโปรไฟล์</h3>
             <input
-              onChange={handleChooseImageProfile}
+              // onChange={handleChooseImageProfile}
               id="file-upload"
               type="file"
               accept="image/png, image/jpeg"
@@ -103,12 +99,12 @@ const VillageHealthVolunteerDirectory = () => {
               </div>
             </label>
           </div>
-          {imageProfile !== null && imageProfile !== undefined ? (
+          {/* {imageProfile !== null && imageProfile !== undefined ? (
             <div className="col">
               <h3 className="toppick">ภาพโปรไฟล์ที่เลือก</h3>
               <CardMedia image={createUrlImage()}></CardMedia>
             </div>
-          ) : null}
+          ) : null} */}
         </div>
         <div className="row action-button">
           <Button
@@ -128,7 +124,9 @@ const VillageHealthVolunteerDirectory = () => {
         </div>
       </div>
       <div className="village-fund-directory-table management-card">
-        <h3 className="toppick">ทำเนียมอาสาสมัครสาธารณสุขประจำหมู่บ้านหนองบัว</h3>
+        <h3 className="toppick">
+          ทำเนียมอาสาสมัครสาธารณสุขประจำหมู่บ้านหนองบัว
+        </h3>
         <TableContainer component={Paper}>
           <Table stickyHeader>
             <TableHead>
@@ -141,7 +139,7 @@ const VillageHealthVolunteerDirectory = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row, index) => (
+              {directories.map((row, index) => (
                 <TableRow key={row.name}>
                   <TableCell align="center">{index + 1}</TableCell>
                   <TableCell align="left">{row.name}</TableCell>
@@ -168,4 +166,8 @@ const VillageHealthVolunteerDirectory = () => {
     </>
   );
 };
-export default VillageHealthVolunteerDirectory;
+
+const mapStateToProps = (state) => ({
+  directories: state.villageHealthVolunteer.directories,
+});
+export default connect(mapStateToProps)(VillageHealthVolunteerDirectory);
