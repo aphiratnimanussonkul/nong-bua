@@ -50,6 +50,13 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
     initDirectoryValidate
   );
 
+  const setInitData = () => {
+    setPersonalDetail(initDirectory);
+    setPersonalDetailToUpdate(null);
+    setDirectoryToDelete(null);
+    setDirectoryValidate(initDirectoryValidate);
+  };
+
   //Update
   const [personalDetailToUpdate, setPersonalDetailToUpdate] = useState(null);
 
@@ -135,8 +142,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
       } else {
         await createDirectory();
       }
-      setPersonalDetail(initDirectory);
-      setPersonalDetailToUpdate(null);
+      setInitData();
       dispatch(getVillageFundDirectory());
     }
   };
@@ -199,7 +205,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
       );
       deleteImageUploaded([imageProfilePath]);
       await deleteDirectoryById(directoryToDelete.id);
-      setPersonalDetail(initDirectory);
+      setInitData();
       dispatch(getVillageFundDirectory());
     } catch {}
   };
@@ -278,6 +284,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
         </div>
         <div className="row action-button">
           <Button
+            onClick={setInitData}
             size="small"
             variant="outlined"
             className="brown-yellow-outlined-button"
