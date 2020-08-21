@@ -123,7 +123,7 @@ export const deleteVillageProjectById = async (projectId) => {
   return await firestore.collection("village-project").doc(projectId).delete();
 };
 
-export const updateVillgeFundProject = async (project) => {
+export const updateVillageFundProject = async (project) => {
   return await firestore
     .collection("village-project")
     .doc(project.id)
