@@ -117,7 +117,7 @@ const AboutVillage = ({ dispatch, isLoading, aboutVillage }) => {
   //Handle action button
   const onClickSaveAboutVillage = async () => {
     const aboutVillageDetailInValid = getAndUpdateCreateVillageValidate();
-    if (aboutVillageDetailInValid) {
+    if (!aboutVillageDetailInValid) {
       if (aboutVillageToUpdate) {
         await updateAboutVillage();
       } else {
@@ -198,9 +198,9 @@ const AboutVillage = ({ dispatch, isLoading, aboutVillage }) => {
 
   const handleConfirmDelete = async () => {
     setConfirmModalOpen(false);
-    deleteImageUploaded(
-      getImageFullPathFromUrl(aboutVillageToDelete.image, "news-images")
-    );
+    deleteImageUploaded([
+      getImageFullPathFromUrl(aboutVillageToDelete.image, "news-images"),
+    ]);
     await deleteAboutVillageById(aboutVillageToDelete.id);
     setInitData();
     dispatch(getAllAboutVillage());
