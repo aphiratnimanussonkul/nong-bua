@@ -1,6 +1,5 @@
 import firebaseApp from "../firebase/index";
 import { createActionSet } from "../helpers/index";
-import { getUserUID, setUserUID } from "../helpers/storage/storage";
 const { auth } = firebaseApp;
 export const SIGNIN_USER = createActionSet("SIGNIN_USER");
 export const FETCH_USER_INFO = createActionSet("FETCH_USER_INFO");
@@ -13,8 +12,7 @@ export const loginWithEmailAndPassword = ({ email, password }) => async (
     auth
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
-        dispatch({ type: SIGNIN_USER.SUCCESS, payload: result.user.uid });
-        setUserUID(result.user.uid);
+        dispatch({ type: SIGNIN_USER.SUCCESS, payload: result.user });
       })
       .catch(() => {
         dispatch({ type: SIGNIN_USER.FAILED });
@@ -27,17 +25,13 @@ export const loginWithEmailAndPassword = ({ email, password }) => async (
 export const getUserInfo = () => async (dispatch) => {
   dispatch({ type: FETCH_USER_INFO.PENDDING });
   try {
-    const userUID = getUserUID();
-    if (
-      userUID !== "null" &&
-      userUID !== null &&
-      userUID !== undefined &&
-      userUID !== "undefined"
-    ) {
-      dispatch({ type: FETCH_USER_INFO.SUCCESS, payload: userUID });
-    } else {
-      dispatch({ type: FETCH_USER_INFO.FAILED });
-    }
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        dispatch({ type: FETCH_USER_INFO.SUCCESS, payload: user });
+      } else {
+        dispatch({ type: FETCH_USER_INFO.FAILED });
+      }
+    });
   } catch {
     dispatch({ type: FETCH_USER_INFO.FAILED });
   }
@@ -45,8 +39,6 @@ export const getUserInfo = () => async (dispatch) => {
 
 export const logout = () => {
   try {
-    auth.signOut().then(() => {
-      setUserUID(null);
-    });
+    auth.signOut();
   } catch {}
 };
