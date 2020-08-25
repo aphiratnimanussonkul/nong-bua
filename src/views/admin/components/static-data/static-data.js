@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   CardMedia,
@@ -15,16 +15,25 @@ import {
 } from "@material-ui/core";
 import "./static-data.scss";
 import UploadIcon from "../../../../assets/upload.png";
+import {
+  getVillageStatic,
+  updateVillageStaticById,
+  createVillageStatic,
+  deleteVillageStaticById,
+} from "../../../../actions/village-health-volunteer";
+import {
+  deleteImageUploaded,
+  uploadImages,
+} from "../../../../actions/upload-image";
+import {
+  getImageFullPathFromUrl,
+  getImageUrl,
+} from "../../../../helpers/image-url/image-url";
+import Loading from "../../../../components/loading/loading";
+import ConfirmModal from "../../../../components/confirm-modal/confirm-modal";
+import { connect } from "react-redux";
 
-const StaticData = () => {
-  const [iconImage, setIconImage] = useState(null);
-
-  //Table Data
-  const createData = (title, amount, icon) => {
-    return { title, amount, icon };
-  };
-  const imageUrl =
-    "https://i.ytimg.com/vi/8OcC_b0FJdI/hq720_live.jpg?sqp=CMiM0PkF-oaymwEZCNAFEJQDSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLBqafv9DwYFiB4L835jEbGJbZ4qtw";
+const StaticData = ({ dispatch, villageStatics, isLoading }) => {
   const headers = [
     { name: "ลำดับที่", align: "center" },
     { name: "ข้อมูลเกี่ยวกับ", align: "left" },
@@ -32,19 +41,164 @@ const StaticData = () => {
     { name: "Icon", align: "center" },
     { name: "แก้ไข / ลบ", align: "right" },
   ];
-  const rows = [
-    createData("Frozen yoghurt", 230, imageUrl),
-    createData("Frozen yoghurt", 100, imageUrl),
-    createData(" yoghurt", 430, imageUrl),
-    createData("Frozen asdadadadad", 5, imageUrl),
-  ];
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
-  const handleChooseIconImage = (event) => {
-    setIconImage(event.target.files[0]);
+  const initVillageStaticValidate = {
+    unit: false,
+    amount: false,
+    icon: false,
+  };
+  const [villageStaticValidate, setDirectoryValidate] = useState(
+    initVillageStaticValidate
+  );
+
+  const setInitData = () => {
+    setVillageStatic(initVillageStatic);
+    setVillageStaticToDelete(null);
+    setVillageStaticToUpdate(null);
+    setDirectoryValidate(initVillageStaticValidate);
   };
 
-  const createUrlImage = () => {
-    return URL.createObjectURL(iconImage);
+  //Update
+  const [villageStaticToUpdate, setVillageStaticToUpdate] = useState(null);
+
+  //Delete
+  const [villageStaticToDelete, setVillageStaticToDelete] = useState(null);
+  const initVillageStatic = {
+    unit: "",
+    amount: "",
+    iconName: "",
+    iconUrl: null,
+  };
+  const [villageStatic, setVillageStatic] = useState(initVillageStatic);
+
+  useEffect(() => {
+    dispatch(getVillageStatic());
+  }, [dispatch]);
+
+  //Handle input change
+  const onUitInputChange = (event) => {
+    const { unit, ...other } = villageStatic;
+    setVillageStatic({
+      unit: event.target.value,
+      ...other,
+    });
+  };
+
+  const onAmountInputChange = (event) => {
+    const { amount, ...other } = villageStatic;
+    setVillageStatic({
+      amount: event.target.value,
+      ...other,
+    });
+  };
+
+  const onIconNameInputChange = (event) => {
+    const { iconName, ...other } = villageStatic;
+    setVillageStatic({
+      iconName: event.target.value,
+      ...other,
+    });
+  };
+
+  const handleChooseImageIcon = (event) => {
+    const { iconUrl, ...other } = villageStatic;
+    setVillageStatic({
+      iconUrl: event.target.files[0],
+      ...other,
+    });
+  };
+
+  const getAndUpdateVillageStaticValidate = () => {
+    const unitInvalid = villageStatic.unit === "";
+    const amountInvalid = villageStatic.amount === null;
+    const iconInvalid =
+      villageStatic.iconName === null || villageStatic.iconUrl === null;
+    setDirectoryValidate({
+      unit: unitInvalid,
+      amount: amountInvalid,
+      icon: iconInvalid,
+    });
+    return unitInvalid || amountInvalid || iconInvalid;
+  };
+
+  //Handle actions button
+  const onClickSaveButton = async () => {
+    const villageStaticInvalid = getAndUpdateVillageStaticValidate();
+    if (!villageStaticInvalid) {
+      if (villageStaticToUpdate) {
+        await updateVillageStatic();
+      } else {
+        await insertVillageStatic();
+      }
+      setInitData();
+      dispatch(getVillageStatic());
+    }
+  };
+
+  const updateVillageStatic = async () => {
+    let imagesUploadedToDelete = [];
+    try {
+      if (villageStaticToUpdate.iconUrl !== villageStatic.iconUrl) {
+        const { imageRefPath, imageUrlUploaded } = await uploadImages(
+          [villageStatic.iconUrl],
+          "village-static"
+        );
+        imagesUploadedToDelete = imageRefPath;
+        const { iconUrl, ...others } = villageStatic;
+        await updateVillageStaticById({
+          iconUrl: imageUrlUploaded[0],
+          ...others,
+        });
+        deleteImageUploaded([
+          getImageFullPathFromUrl(
+            villageStaticToUpdate.iconUrl,
+            "village-static"
+          ),
+        ]);
+      } else {
+        await updateVillageStaticById(villageStatic);
+      }
+    } catch (error) {
+      alert("ไม่สามารถแก้ไขข้อมูลทางสถิติของหมู่บ้านได้, กรุณาลองอีกครั้ง");
+      deleteImageUploaded(imagesUploadedToDelete);
+    }
+  };
+
+  const insertVillageStatic = async () => {
+    let imagesUploadedToDelete = [];
+    try {
+      const { imageRefPath, imageUrlUploaded } = await uploadImages(
+        [villageStatic.iconUrl],
+        "village-static"
+      );
+      imagesUploadedToDelete = imageRefPath;
+      const { iconUrl, ...others } = villageStatic;
+      await createVillageStatic({
+        ...others,
+        iconUrl: imageUrlUploaded[0],
+      }).catch(() => {
+        alert("ไม่สามารถเพิ่มข้อมูลทางสถิติของหมู่บ้านได้, กรุณาลองอีกครั้ง");
+        deleteImageUploaded(imagesUploadedToDelete);
+      });
+    } catch {
+      alert("ไม่สามารถเพิ่มข้อมูลทางสถิติของหมู่บ้านได้, กรุณาลองอีกครั้ง");
+      deleteImageUploaded(imagesUploadedToDelete);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    setConfirmModalOpen(false);
+    try {
+      const imageProfilePath = getImageFullPathFromUrl(
+        villageStaticToDelete.iconUrl,
+        "village-static"
+      );
+      deleteImageUploaded([imageProfilePath]);
+      await deleteVillageStaticById(villageStaticToDelete.id);
+      setInitData();
+      dispatch(getVillageStatic());
+    } catch {}
   };
 
   return (
@@ -54,6 +208,9 @@ const StaticData = () => {
           <div className="col">
             <h3 className="toppick">ข้อมูลเกี่ยวกับ</h3>
             <TextField
+              error={villageStaticValidate.unit}
+              value={villageStatic.unit}
+              onChange={onUitInputChange}
               label="ข้อมูลเกี่ยวกับ"
               placeholder="เช่น จำนวนประชากร"
               type="text"
@@ -63,6 +220,9 @@ const StaticData = () => {
           <div className="col">
             <h3 className="toppick">จำนวนข้อมูลทางสถิติ</h3>
             <TextField
+              error={villageStaticValidate.amount}
+              value={villageStatic.amount}
+              onChange={onAmountInputChange}
               label="จำนวนข้อมูลทางสถิติ"
               placeholder="เช่น 120"
               type="text"
@@ -74,6 +234,9 @@ const StaticData = () => {
           <div className="col">
             <h3 className="toppick">ชื่อ Icon ที่แสดงข้อมูล</h3>
             <TextField
+              error={villageStaticValidate.icon}
+              value={villageStatic.iconName}
+              onChange={onIconNameInputChange}
               label="ชื่อ Icon"
               placeholder="เช่น home"
               type="text"
@@ -96,7 +259,7 @@ const StaticData = () => {
             <div className="row">
               <div className="col">
                 <input
-                  onChange={handleChooseIconImage}
+                  onChange={handleChooseImageIcon}
                   id="file-upload"
                   type="file"
                   accept="image/png, image/jpeg"
@@ -110,9 +273,12 @@ const StaticData = () => {
                   </div>
                 </label>
               </div>
-              {iconImage !== null && iconImage !== undefined ? (
+              {villageStatic.iconUrl !== null &&
+              villageStatic.iconUrl !== undefined ? (
                 <div className="col icon-image">
-                  <CardMedia image={createUrlImage()}></CardMedia>
+                  <CardMedia
+                    image={getImageUrl(villageStatic.iconUrl)}
+                  ></CardMedia>
                 </div>
               ) : null}
             </div>
@@ -120,6 +286,7 @@ const StaticData = () => {
         </div>
         <div className="row action-button">
           <Button
+            onClick={setInitData}
             size="small"
             variant="outlined"
             className="brown-yellow-outlined-button"
@@ -130,50 +297,90 @@ const StaticData = () => {
             size="small"
             variant="outlined"
             className="green-solid-button"
+            onClick={onClickSaveButton}
           >
             บันทึก
           </Button>
         </div>
       </div>
-      <div className="static-data-table management-card">
-        <h3 className="toppick">ทำเนียบคณะกรรมการกองทุนหมู่บ้าน</h3>
-        <TableContainer component={Paper}>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                {headers.map((header, index) => (
-                  <TableCell align={header.align} key={index}>
-                    {header.name}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row, index) => (
-                <TableRow key={row.name}>
-                  <TableCell align="center">{index + 1}</TableCell>
-                  <TableCell align="left">{row.title}</TableCell>
-                  <TableCell align="center">{row.amount}</TableCell>
-                  <TableCell align="center">
-                    <CardMedia image={row.icon}></CardMedia>
-                  </TableCell>
-                  <TableCell align="right">
-                    <div className="action-buttons">
-                      <IconButton>
-                        <Icon>create</Icon>
-                      </IconButton>
-                      <IconButton>
-                        <Icon>delete</Icon>
-                      </IconButton>
-                    </div>
-                  </TableCell>
+      {isLoading ? (
+        <Loading></Loading>
+      ) : (
+        <div className="static-data-table management-card">
+          <h3 className="toppick">ทำเนียบคณะกรรมการกองทุนหมู่บ้าน</h3>
+          <TableContainer component={Paper}>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  {headers.map((header, index) => (
+                    <TableCell align={header.align} key={index}>
+                      {header.name}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
+              </TableHead>
+              <TableBody>
+                {villageStatics.map((row, index) => (
+                  <TableRow key={row.name}>
+                    <TableCell align="center">{index + 1}</TableCell>
+                    <TableCell align="left">{row.unit}</TableCell>
+                    <TableCell align="center">{row.amount}</TableCell>
+                    <TableCell align="center">
+                      {row.iconName ? (
+                        <Icon>{row.iconName}</Icon>
+                      ) : (
+                        <CardMedia image={row.iconUrl}></CardMedia>
+                      )}
+                    </TableCell>
+                    <TableCell align="right">
+                      <div className="action-buttons">
+                        <IconButton
+                          onClick={() => {
+                            setVillageStatic(row);
+                            setVillageStaticToUpdate(row);
+                          }}
+                        >
+                          <Icon>create</Icon>
+                        </IconButton>
+                        <IconButton
+                          onClick={() => {
+                            setVillageStaticToDelete(row);
+                            setConfirmModalOpen(true);
+                          }}
+                        >
+                          <Icon>delete</Icon>
+                        </IconButton>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      )}
+      {confirmModalOpen ? (
+        <ConfirmModal
+          onCancel={() => setConfirmModalOpen(false)}
+          onConfirm={handleConfirmDelete}
+          title="คุณต้องการลบข้อมูลทางสถิติของหมู่บ้านนี้ ใช่ หรือ ไม่"
+          descrption={[
+            {
+              title: "ข้อมูล",
+              detail: villageStaticToDelete.unit,
+            },
+            {
+              title: "จำนวน",
+              detail: villageStaticToDelete.amount,
+            },
+          ]}
+        ></ConfirmModal>
+      ) : null}
     </>
   );
 };
-export default StaticData;
+const mapStateToProps = (state) => ({
+  villageStatics: state.villageHealthVolunteer.villageStatics,
+  isLoading: state.villageHealthVolunteer.isLoading,
+});
+export default connect(mapStateToProps)(StaticData);
