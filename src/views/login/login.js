@@ -15,8 +15,8 @@ const Login = ({ loginFail, dispatch, userInfo, isAdmin }) => {
     return email !== "" && password !== "";
   };
 
-  const onClickLogin = () => {
-    dispatch(loginWithEmailAndPassword({ email, password }));
+  const onClickLogin = async () => {
+    await dispatch(loginWithEmailAndPassword({ email, password }));
     if (userInfo && isAdmin) {
       history.replace("/management");
     }

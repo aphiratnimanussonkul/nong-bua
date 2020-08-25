@@ -28,7 +28,12 @@ export const getUserInfo = () => async (dispatch) => {
   dispatch({ type: FETCH_USER_INFO.PENDDING });
   try {
     const userUID = getUserUID();
-    if (userUID) {
+    if (
+      userUID !== "null" &&
+      userUID !== null &&
+      userUID !== undefined &&
+      userUID !== "undefined"
+    ) {
       dispatch({ type: FETCH_USER_INFO.SUCCESS, payload: userUID });
     } else {
       dispatch({ type: FETCH_USER_INFO.FAILED });
