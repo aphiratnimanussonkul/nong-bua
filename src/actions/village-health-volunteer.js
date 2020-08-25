@@ -63,24 +63,6 @@ export const getVillageHealthVolunteerDirectory = () => async (dispatch) => {
   }
 };
 
-export const getVillageStatic = () => async (dispatch) => {
-  dispatch({ type: FETCH_VILLAGE_STATIC.PENDDING });
-
-  try {
-    await firestore
-      .collection("village-static")
-      .get()
-      .then((result) => {
-        dispatch({
-          type: FETCH_VILLAGE_STATIC.SUCCESS,
-          payload: result.docs.map((data) => data.data()),
-        });
-      });
-  } catch (error) {
-    dispatch({ type: FETCH_VILLAGE_STATIC.FAILED });
-  }
-};
-
 export const createVillageHealthVolunteer = async (villgeHealthVolunteer) => {
   return await firestore
     .collection("village-health-volunteer-directory")
@@ -102,4 +84,40 @@ export const deleteVillageHealthVolunteerById = async (
     .collection("village-health-volunteer-directory")
     .doc(villageHealthVolunteerId)
     .delete();
+};
+
+export const getVillageStatic = () => async (dispatch) => {
+  dispatch({ type: FETCH_VILLAGE_STATIC.PENDDING });
+
+  try {
+    await firestore
+      .collection("village-static")
+      .get()
+      .then((result) => {
+        dispatch({
+          type: FETCH_VILLAGE_STATIC.SUCCESS,
+          payload: result.docs.map((data) => {
+            return {
+              id: data.id,
+              ...data.data(),
+            };
+          }),
+        });
+      });
+  } catch (error) {
+    dispatch({ type: FETCH_VILLAGE_STATIC.FAILED });
+  }
+};
+
+export const updateVillageStaticById = async (villageStatic) => {
+  const { id, ...others } = villageStatic;
+  return await firestore.collection("village-static").doc(id).set(others);
+};
+
+export const createVillageStatic = async (villageStatic) => {
+  return await firestore.collection("village-static").add(villageStatic);
+};
+
+export const deleteVillageStaticById = async (id) => {
+  return await firestore.collection("village-static").doc(id).delete();
 };
