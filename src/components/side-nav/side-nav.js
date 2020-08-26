@@ -63,6 +63,10 @@ const SideNav = () => {
     history.replace("/management/login");
   };
 
+  const onGoToWebView = () => {
+    history.replace("/");
+  };
+
   return (
     <div className="side-nav">
       <div className="logo">
@@ -94,6 +98,10 @@ const SideNav = () => {
           <ListItem onClick={onLogout} button>
             <Icon>exit_to_app</Icon>
             <ListItemText primary="ออกจากระบบ" />
+          </ListItem>
+          <ListItem onClick={onGoToWebView} button>
+            <Icon>web</Icon>
+            <ListItemText primary="กลับสู่หน้าหลัก" />
           </ListItem>
         </div>
       </List>
