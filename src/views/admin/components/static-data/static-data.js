@@ -113,7 +113,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
     const unitInvalid = villageStatic.unit === "";
     const amountInvalid = villageStatic.amount === null;
     const iconInvalid =
-      villageStatic.iconName === null || villageStatic.iconUrl === null;
+      villageStatic.iconName === null && villageStatic.iconUrl === null;
     setDirectoryValidate({
       unit: unitInvalid,
       amount: amountInvalid,
@@ -139,13 +139,13 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
   const updateVillageStatic = async () => {
     let imagesUploadedToDelete = [];
     try {
-      if (villageStaticToUpdate.iconUrl !== villageStatic.iconUrl) {
+      const { iconName, iconUrl, ...others } = villageStatic;
+      if (villageStaticToUpdate.iconUrl !== iconUrl && iconName === undefined) {
         const { imageRefPath, imageUrlUploaded } = await uploadImages(
-          [villageStatic.iconUrl],
+          [iconUrl],
           "village-static"
         );
         imagesUploadedToDelete = imageRefPath;
-        const { iconUrl, ...others } = villageStatic;
         await updateVillageStaticById({
           iconUrl: imageUrlUploaded[0],
           ...others,
@@ -160,6 +160,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
         await updateVillageStaticById(villageStatic);
       }
     } catch (error) {
+      console.log(error);
       alert("ไม่สามารถแก้ไขข้อมูลทางสถิติของหมู่บ้านได้, กรุณาลองอีกครั้ง");
       deleteImageUploaded(imagesUploadedToDelete);
     }
@@ -168,19 +169,28 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
   const insertVillageStatic = async () => {
     let imagesUploadedToDelete = [];
     try {
-      const { imageRefPath, imageUrlUploaded } = await uploadImages(
-        [villageStatic.iconUrl],
-        "village-static"
-      );
-      imagesUploadedToDelete = imageRefPath;
-      const { iconUrl, ...others } = villageStatic;
-      await createVillageStatic({
-        ...others,
-        iconUrl: imageUrlUploaded[0],
-      }).catch(() => {
-        alert("ไม่สามารถเพิ่มข้อมูลทางสถิติของหมู่บ้านได้, กรุณาลองอีกครั้ง");
-        deleteImageUploaded(imagesUploadedToDelete);
-      });
+      const { iconName, iconUrl, ...others } = villageStatic;
+      if (villageStatic.iconUrl) {
+        const { imageRefPath, imageUrlUploaded } = await uploadImages(
+          [iconUrl],
+          "village-static"
+        );
+        imagesUploadedToDelete = imageRefPath;
+        await createVillageStatic({
+          ...others,
+          iconUrl: imageUrlUploaded[0],
+        }).catch(() => {
+          alert("ไม่สามารถเพิ่มข้อมูลทางสถิติของหมู่บ้านได้, กรุณาลองอีกครั้ง");
+          deleteImageUploaded(imagesUploadedToDelete);
+        });
+      } else {
+        await createVillageStatic({
+          ...others,
+          iconName,
+        }).catch(() => {
+          alert("ไม่สามารถเพิ่มข้อมูลทางสถิติของหมู่บ้านได้, กรุณาลองอีกครั้ง");
+        });
+      }
     } catch {
       alert("ไม่สามารถเพิ่มข้อมูลทางสถิติของหมู่บ้านได้, กรุณาลองอีกครั้ง");
       deleteImageUploaded(imagesUploadedToDelete);
