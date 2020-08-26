@@ -111,9 +111,10 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
 
   const getAndUpdateVillageStaticValidate = () => {
     const unitInvalid = villageStatic.unit === "";
-    const amountInvalid = villageStatic.amount === null;
+    const amountInvalid = villageStatic.amount === "";
     const iconInvalid =
-      villageStatic.iconName === null && villageStatic.iconUrl === null;
+      (villageStatic.iconName === "" || villageStatic.iconName === undefined) &&
+      villageStatic.iconUrl === null;
     setDirectoryValidate({
       unit: unitInvalid,
       amount: amountInvalid,
@@ -211,6 +212,13 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
     } catch {}
   };
 
+  const deleteImageIcon = () => {
+    const { iconUrl, ...others } = villageStatic;
+    setVillageStatic({
+      iconUrl: null,
+      ...others,
+    });
+  };
   return (
     <>
       <div className="management-card static-data">
@@ -286,9 +294,11 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
               {villageStatic.iconUrl !== null &&
               villageStatic.iconUrl !== undefined ? (
                 <div className="col icon-image">
-                  <CardMedia
-                    image={getImageUrl(villageStatic.iconUrl)}
-                  ></CardMedia>
+                  <CardMedia image={getImageUrl(villageStatic.iconUrl)}>
+                    <IconButton onClick={deleteImageIcon}>
+                      <Icon>clear</Icon>
+                    </IconButton>
+                  </CardMedia>
                 </div>
               ) : null}
             </div>

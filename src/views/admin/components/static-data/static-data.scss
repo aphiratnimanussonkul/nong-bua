@@ -38,6 +38,12 @@ div.static-data {
             height: 150px;
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
           }
+          button.MuiIconButton-root {
+            padding: 2px;
+            margin: -12px -12px auto auto;
+            color: white;
+            background-color: var(--green-lemon-second);
+          }
         }
         > div.col {
           width: 50%;
