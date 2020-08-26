@@ -38,7 +38,7 @@ export const getVillageIntroduce = () => async (dispatch) => {
   try {
     await firestore
       .collection("about-village")
-      .where("tag", "==", "INTRODUCE")
+      .where("sorting", "==", "INTRODUCE")
       .get()
       .then((result) => {
         dispatch({
