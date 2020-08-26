@@ -144,7 +144,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
       if (villageStaticToUpdate.iconUrl !== iconUrl && iconName === undefined) {
         const { imageRefPath, imageUrlUploaded } = await uploadImages(
           [iconUrl],
-          "village-static"
+          "icons"
         );
         imagesUploadedToDelete = imageRefPath;
         await updateVillageStaticById({
@@ -154,7 +154,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
         deleteImageUploaded([
           getImageFullPathFromUrl(
             villageStaticToUpdate.iconUrl,
-            "village-static"
+            "icons"
           ),
         ]);
       } else {
@@ -174,7 +174,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
       if (villageStatic.iconUrl) {
         const { imageRefPath, imageUrlUploaded } = await uploadImages(
           [iconUrl],
-          "village-static"
+          "icons"
         );
         imagesUploadedToDelete = imageRefPath;
         await createVillageStatic({
@@ -203,7 +203,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
     try {
       const imageProfilePath = getImageFullPathFromUrl(
         villageStaticToDelete.iconUrl,
-        "village-static"
+        "icons"
       );
       deleteImageUploaded([imageProfilePath]);
       await deleteVillageStaticById(villageStaticToDelete.id);
