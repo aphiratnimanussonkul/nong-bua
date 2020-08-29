@@ -246,7 +246,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
               onChange={onAmountInputChange}
               label="จำนวนข้อมูลทางสถิติ"
               placeholder="เช่น 120"
-              type="text"
+              type="number"
               variant="outlined"
             />
           </div>
