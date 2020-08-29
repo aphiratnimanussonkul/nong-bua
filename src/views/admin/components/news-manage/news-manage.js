@@ -41,6 +41,7 @@ import ConfirmModal from "../../../../components/confirm-modal/confirm-modal";
 import {
   getImageUrl,
   getImageFullPathFromUrl,
+  isImageOnServer,
 } from "../../../../helpers/image-url/image-url";
 
 const NewsManage = ({ dispatch, news, isLoading }) => {
@@ -111,32 +112,20 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
     return createNewsDetail.images.length + imagesToUpload.length >= 4;
   };
 
-  const isImageOnServer = (image) => {
-    try {
-      URL.createObjectURL(image);
-      return false;
-    } catch {
-      return true;
-    }
-  };
-
   //Set data to create news
   const handleInputTitleChange = (event) => {
     const { title, ...others } = createNewsDetail;
     setCreateNewsDetail({ title: event.target.value, ...others });
-    getAndUpdateCreateNewsDetailValidate();
   };
 
   const handleTagsChange = (event) => {
     const { tags, ...others } = createNewsDetail;
     setCreateNewsDetail({ tags: event.target.value, ...others });
-    getAndUpdateCreateNewsDetailValidate();
   };
 
   const handleTextAreaContentChange = (event) => {
     const { description, ...others } = createNewsDetail;
     setCreateNewsDetail({ description: event.target.value, ...others });
-    getAndUpdateCreateNewsDetailValidate();
   };
 
   const handleChooseFile = (event) => {
@@ -175,67 +164,64 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
 
   //Handle action button
   const onClickSaveNews = () => {
-    if (newsToUpdate) {
-      updateNews();
+    const crateNewsDetailInValid = getAndUpdateCreateNewsDetailValidate();
+    if (!crateNewsDetailInValid) {
+      if (newsToUpdate) {
+        updateNews();
+      } else {
+        insertNews();
+      }
     } else {
-      insertNews();
+      alert("ไม่สามารถทำรายการนี้ได้ เนื่องจากข้อมูลบางส่วนไม่ครบ");
     }
   };
 
   const updateNews = async () => {
-    const crateNewsDetailInValid = getAndUpdateCreateNewsDetailValidate();
-    if (!crateNewsDetailInValid) {
-      let imagesUploadedToDelete = [];
-      try {
-        deleteImageUploaded(imagesToDelete);
-        if (imagesToUpload.length) {
-          const { imageRefPath, imageUrlUploaded } = await uploadImages(
-            imagesToUpload,
-            "news-images"
-          );
-          imagesUploadedToDelete = imageRefPath;
-          const { images, ...others } = createNewsDetail;
-          await updateNewsById({
-            images: [...images, ...imageUrlUploaded],
-            ...others,
-          });
-        } else {
-          await updateNewsById(createNewsDetail);
-        }
-
-        setInitData();
-        dispatch(getNews());
-      } catch {
-        deleteImageUploaded(imagesUploadedToDelete);
-        alert("ไม่สามารถแก้ไขข่าวนี้ได้ กรุณาลองใหม่อีกครั้ง");
-      }
-    }
-  };
-
-  const insertNews = async () => {
-    const crateNewsDetailInValid = getAndUpdateCreateNewsDetailValidate();
-    if (!crateNewsDetailInValid) {
-      try {
+    let imagesUploadedToDelete = [];
+    try {
+      deleteImageUploaded(imagesToDelete);
+      if (imagesToUpload.length) {
         const { imageRefPath, imageUrlUploaded } = await uploadImages(
           imagesToUpload,
           "news-images"
         );
+        imagesUploadedToDelete = imageRefPath;
         const { images, ...others } = createNewsDetail;
-        await createNews({ images: imageUrlUploaded, ...others })
-          .then(() => {
-            setInitData();
-            dispatch(getNews());
-          })
-          .catch(() => {
-            deleteImageUploaded(imageRefPath);
-          });
-      } catch (error) {
-        alert("ไม่สามารถเพิ่มข่าวได้, กรุณาลองใหม่อีกครั้ง");
-        setCreateNewsDatailValidate(initCreateNewsDatailValidate);
-        setCreateNewsDetail(initCreateNewsDetail);
+        await updateNewsById({
+          images: [...images, ...imageUrlUploaded],
+          ...others,
+        });
+      } else {
+        await updateNewsById(createNewsDetail);
       }
-    } else {
-      alert("ไม่สามารถเพิ่มข่าวได้ เนื่องจากข้อมูลบางส่วนไม่ครบ");
+
+      setInitData();
+      dispatch(getNews());
+    } catch {
+      deleteImageUploaded(imagesUploadedToDelete);
+      alert("ไม่สามารถแก้ไขข่าวนี้ได้ กรุณาลองใหม่อีกครั้ง");
+    }
+  };
+
+  const insertNews = async () => {
+    try {
+      const { imageRefPath, imageUrlUploaded } = await uploadImages(
+        imagesToUpload,
+        "news-images"
+      );
+      const { images, ...others } = createNewsDetail;
+      await createNews({ images: imageUrlUploaded, ...others })
+        .then(() => {
+          setInitData();
+          dispatch(getNews());
+        })
+        .catch(() => {
+          deleteImageUploaded(imageRefPath);
+        });
+    } catch (error) {
+      alert("ไม่สามารถเพิ่มข่าวได้, กรุณาลองใหม่อีกครั้ง");
+      setCreateNewsDatailValidate(initCreateNewsDatailValidate);
+      setCreateNewsDetail(initCreateNewsDetail);
     }
   };
 
@@ -245,7 +231,7 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
     const descriptionInValid = createNewsDetail.description === "";
     const imagesInValid = imagesToUpload.length
       ? false
-      : true || createNewsDetail.images.length
+      : true && createNewsDetail.images.length
       ? false
       : true;
     setCreateNewsDatailValidate({
@@ -367,7 +353,11 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
           </div>
           <div className="col images-selected">
             <h3 className="toppick">รูปภาพที่เลือก</h3>
-            <GridList>
+            <GridList
+              className={
+                createNewsDatailValidate.images ? "image-select-error" : null
+              }
+            >
               {createNewsDetail.images.map((image, index) => (
                 <CardMedia image={getImageUrl(image)} key={index}>
                   <IconButton onClick={() => deleteImage(image)}>
