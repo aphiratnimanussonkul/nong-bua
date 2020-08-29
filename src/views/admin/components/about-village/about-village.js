@@ -125,6 +125,8 @@ const AboutVillage = ({ dispatch, isLoading, aboutVillage }) => {
       }
       setInitData();
       dispatch(getAllAboutVillage());
+    } else {
+      alert("ไม่สามารถทำรายการนี้ได้ เนื่องจากข้อมูลบางส่วนไม่ครบ");
     }
   };
 
@@ -227,6 +229,7 @@ const AboutVillage = ({ dispatch, isLoading, aboutVillage }) => {
             <FormControl variant="outlined">
               <Select
                 variant="outlined"
+                error={aboutVillageValidate.sorting}
                 value={createAboutVillageDetail.sorting}
                 onChange={handleSortingChange}
               >

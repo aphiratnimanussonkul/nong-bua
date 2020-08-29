@@ -120,7 +120,7 @@ const VillageHealthVolunteerDirectory = ({
   };
 
   const getAndUpdateDirectoryValidate = () => {
-    const titleInvalid = personalDetail.title === "";
+    const titleInvalid = personalDetail.name === "";
     const positionInvalid = personalDetail.position === "";
     const priorityInvalid = personalDetail.priority === null;
     const imageProfileInvalid = personalDetail.imageProfile === null;
@@ -146,6 +146,8 @@ const VillageHealthVolunteerDirectory = ({
       }
       setInitData();
       dispatch(getVillageHealthVolunteerDirectory());
+    } else {
+      alert("ไม่สามารถทำรายการนี้ได้ เนื่องจากข้อมูลบางส่วนไม่ครบ");
     }
   };
 

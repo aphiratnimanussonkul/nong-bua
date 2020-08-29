@@ -28,6 +28,7 @@ import {
 import {
   getImageFullPathFromUrl,
   getImageUrl,
+  isImageOnServer,
 } from "../../../../helpers/image-url/image-url";
 import Loading from "../../../../components/loading/loading";
 import ConfirmModal from "../../../../components/confirm-modal/confirm-modal";
@@ -134,6 +135,8 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
       }
       setInitData();
       dispatch(getVillageStatic());
+    } else {
+      alert("ไม่สามารถทำรายการนี้ได้ เนื่องจากข้อมูลบางส่วนไม่ครบ");
     }
   };
 
@@ -152,10 +155,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
           ...others,
         });
         deleteImageUploaded([
-          getImageFullPathFromUrl(
-            villageStaticToUpdate.iconUrl,
-            "icons"
-          ),
+          getImageFullPathFromUrl(villageStaticToUpdate.iconUrl, "icons"),
         ]);
       } else {
         await updateVillageStaticById(villageStatic);
@@ -206,10 +206,13 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
         "icons"
       );
       deleteImageUploaded([imageProfilePath]);
+
       await deleteVillageStaticById(villageStaticToDelete.id);
       setInitData();
       dispatch(getVillageStatic());
-    } catch {}
+    } catch {
+      alert("ไม่สามารถลบข้อมูลนี้ได้ กรุณาลองใหม่อีกครั้ง");
+    }
   };
 
   const deleteImageIcon = () => {

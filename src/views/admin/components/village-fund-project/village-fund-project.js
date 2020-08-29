@@ -63,6 +63,8 @@ const VillageFundPorject = ({ dispatch, isLoading, projects }) => {
       } else {
         createProject();
       }
+    } else {
+      alert("ไม่สามารถทำรายการนี้ได้ เนื่องจากข้อมูลบางส่วนไม่ครบ");
     }
   };
 
