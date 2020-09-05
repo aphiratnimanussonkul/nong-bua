@@ -37,6 +37,7 @@ import {
 import Loading from "../../../../components/loading/loading";
 import ConfirmModal from "../../../../components/confirm-modal/confirm-modal";
 import { connect } from "react-redux";
+import LoadingDialog from "../../../../components/loading-dialog/loading-dialog";
 
 const AboutVillage = ({ dispatch, isLoading, aboutVillage }) => {
   const aboutVillageOrders = [
@@ -83,11 +84,14 @@ const AboutVillage = ({ dispatch, isLoading, aboutVillage }) => {
   //State for update news
   const [aboutVillageToUpdate, setAboutVillageToUpdate] = useState(null);
 
+  const [callingAPI, setCallingAPI] = useState(false);
+
   const setInitData = () => {
     setCreateAboutVillageDetail(initCreateAboutVillage);
     setAboutVillageValidate(initAboutVillageValidate);
     setAboutVillageToDelete(null);
     setAboutVillageToUpdate(null);
+    setCallingAPI(false);
   };
 
   //Set data to create news
@@ -118,6 +122,7 @@ const AboutVillage = ({ dispatch, isLoading, aboutVillage }) => {
   const onClickSaveAboutVillage = async () => {
     const aboutVillageDetailInValid = getAndUpdateCreateVillageValidate();
     if (!aboutVillageDetailInValid) {
+      setCallingAPI(true);
       if (aboutVillageToUpdate) {
         await updateAboutVillage();
       } else {
@@ -151,6 +156,7 @@ const AboutVillage = ({ dispatch, isLoading, aboutVillage }) => {
         await updateAboutVillageById(createAboutVillageDetail);
       }
     } catch (error) {
+      setCallingAPI(false);
       alert("ไม่สามารถแก้ไขข้อมูลเกี่ยวกับหมู่บ้านได้, กรุณาลองอีกครั้ง");
       deleteImageUploaded(imagesUploadedToDelete);
     }
@@ -173,6 +179,7 @@ const AboutVillage = ({ dispatch, isLoading, aboutVillage }) => {
         deleteImageUploaded(imagesUploadedToDelete);
       });
     } catch {
+      setCallingAPI(false);
       alert("ไม่สามารถเพิ่มข้อมูลเกี่ยวกับหมู่บ้านได้, กรุณาลองอีกครั้ง");
       deleteImageUploaded(imagesUploadedToDelete);
     }
@@ -200,12 +207,18 @@ const AboutVillage = ({ dispatch, isLoading, aboutVillage }) => {
 
   const handleConfirmDelete = async () => {
     setConfirmModalOpen(false);
-    deleteImageUploaded([
-      getImageFullPathFromUrl(aboutVillageToDelete.image, "news-images"),
-    ]);
-    await deleteAboutVillageById(aboutVillageToDelete.id);
-    setInitData();
-    dispatch(getAllAboutVillage());
+    setCallingAPI(true);
+    try {
+      deleteImageUploaded([
+        getImageFullPathFromUrl(aboutVillageToDelete.image, "about-village"),
+      ]);
+      await deleteAboutVillageById(aboutVillageToDelete.id);
+      setInitData();
+      dispatch(getAllAboutVillage());
+    } catch (error) {
+      setCallingAPI(false);
+      alert("ไม่สามารถลบข้อมูลนี้ได้ กรุณาลองใหม่อีกครั้ง");
+    }
   };
 
   return (
@@ -374,6 +387,7 @@ const AboutVillage = ({ dispatch, isLoading, aboutVillage }) => {
           ]}
         ></ConfirmModal>
       ) : null}
+      <LoadingDialog open={callingAPI}></LoadingDialog>
     </>
   );
 };

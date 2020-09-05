@@ -23,6 +23,7 @@ import {
 import ConfirmModal from "../../../../components/confirm-modal/confirm-modal";
 import { connect } from "react-redux";
 import Loading from "../../../../components/loading/loading";
+import LoadingDialog from "../../../../components/loading-dialog/loading-dialog";
 
 const VillageFundPorject = ({ dispatch, isLoading, projects }) => {
   const headers = [
@@ -37,6 +38,7 @@ const VillageFundPorject = ({ dispatch, isLoading, projects }) => {
   const [projectNameInValid, setProjectNameInValid] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
   const [projectToUpdate, setProjectToUpdate] = useState(null);
+  const [callingAPI, setCallingAPI] = useState(false);
 
   useEffect(() => {
     dispatch(getVillageProject());
@@ -52,12 +54,14 @@ const VillageFundPorject = ({ dispatch, isLoading, projects }) => {
     setProjectToDelete(null);
     setProjectToUpdate(null);
     dispatch(getVillageProject());
+    setCallingAPI(false);
   };
 
   const onSaveButtonClick = () => {
     const isProjectNameEmpty = projectName === null || projectName === "";
     setProjectNameInValid(isProjectNameEmpty);
     if (!isProjectNameEmpty) {
+      setCallingAPI(true);
       if (projectToUpdate) {
         updateProject();
       } else {
@@ -77,6 +81,7 @@ const VillageFundPorject = ({ dispatch, isLoading, projects }) => {
         .then(() => setInitData())
         .catch(() => alert("ไม่สามารถแก้ไขโครงการได้, กรุณาลองใหม่อีกครั้ง"));
     } catch {
+      setCallingAPI(false);
       alert("ไม่สามารถแก้ไขโครงการได้, กรุณาลองใหม่อีกครั้ง");
     }
   };
@@ -89,17 +94,20 @@ const VillageFundPorject = ({ dispatch, isLoading, projects }) => {
         })
         .catch(() => alert("ไม่สามารถเพิ่มโครงการได้, กรุณาลองใหม่อีกครั้ง"));
     } catch {
+      setCallingAPI(false);
       alert("ไม่สามารถเพิ่มโครงการได้, กรุณาลองใหม่อีกครั้ง");
     }
   };
 
   const onConfirmDeleteProject = () => {
     setConfirmModalOpen(false);
+    setCallingAPI(true);
     try {
       deleteVillageProjectById(projectToDelete.id)
         .then(() => setInitData())
         .catch(() => alert("ไม่สามารถลบโครงการได้, กรุณาลองใหม่อีกครั้ง"));
     } catch {
+      setCallingAPI(false);
       alert("ไม่สามารถลบโครงการได้, กรุณาลองใหม่อีกครั้ง");
     }
   };
@@ -205,6 +213,7 @@ const VillageFundPorject = ({ dispatch, isLoading, projects }) => {
           ]}
         ></ConfirmModal>
       ) : null}
+      <LoadingDialog open={callingAPI}></LoadingDialog>
     </>
   );
 };

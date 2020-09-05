@@ -43,6 +43,7 @@ import {
   getImageFullPathFromUrl,
   isImageOnServer,
 } from "../../../../helpers/image-url/image-url";
+import LoadingDialog from "../../../../components/loading-dialog/loading-dialog";
 
 const NewsManage = ({ dispatch, news, isLoading }) => {
   useEffect(() => {
@@ -99,6 +100,8 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
   const [imagesToUpload, setImagesToUpload] = useState([]);
   const [imagesToDelete, setImagesToDelete] = useState([]);
 
+  const [callingAPI, setCallingAPI] = useState(false);
+
   const setInitData = () => {
     setCreateNewsDetail(initCreateNewsDetail);
     setCreateNewsDatailValidate(initCreateNewsDatailValidate);
@@ -106,6 +109,7 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
     setNewsToDelete(null);
     setImagesToUpload([]);
     setImagesToDelete([]);
+    setCallingAPI(false);
   };
 
   const isImagesHaveFour = () => {
@@ -166,6 +170,7 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
   const onClickSaveNews = () => {
     const crateNewsDetailInValid = getAndUpdateCreateNewsDetailValidate();
     if (!crateNewsDetailInValid) {
+      setCallingAPI(true);
       if (newsToUpdate) {
         updateNews();
       } else {
@@ -198,6 +203,7 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
       setInitData();
       dispatch(getNews());
     } catch {
+      setCallingAPI(false);
       deleteImageUploaded(imagesUploadedToDelete);
       alert("ไม่สามารถแก้ไขข่าวนี้ได้ กรุณาลองใหม่อีกครั้ง");
     }
@@ -219,6 +225,7 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
           deleteImageUploaded(imageRefPath);
         });
     } catch (error) {
+      setCallingAPI(false);
       alert("ไม่สามารถเพิ่มข่าวได้, กรุณาลองใหม่อีกครั้ง");
       setCreateNewsDatailValidate(initCreateNewsDatailValidate);
       setCreateNewsDetail(initCreateNewsDetail);
@@ -250,14 +257,20 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
 
   const handleConfirmDelete = async () => {
     setConfirmModalOpen(false);
-    deleteImageUploaded(
-      newsToDelete.images.map((image) =>
-        getImageFullPathFromUrl(image, "news-images")
-      )
-    );
-    await deleteNewsById(newsToDelete.id);
-    setInitData();
-    dispatch(getNews());
+    setCallingAPI(true);
+    try {
+      deleteImageUploaded(
+        newsToDelete.images.map((image) =>
+          getImageFullPathFromUrl(image, "news-images")
+        )
+      );
+      await deleteNewsById(newsToDelete.id);
+      setInitData();
+      dispatch(getNews());
+    } catch (error) {
+      setCallingAPI(false);
+      alert("ไม่สามารถลบข่าวนี้ได้ กรุณาลองใหม่อีกครั้ง")
+    }
   };
 
   return (
@@ -471,6 +484,7 @@ const NewsManage = ({ dispatch, news, isLoading }) => {
           ]}
         ></ConfirmModal>
       ) : null}
+      <LoadingDialog open={callingAPI}></LoadingDialog>
     </>
   );
 };

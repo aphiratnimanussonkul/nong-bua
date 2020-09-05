@@ -35,6 +35,7 @@ import {
   deleteImageUploaded,
 } from "../../../../actions/upload-image";
 import ConfirmModal from "../../../../components/confirm-modal/confirm-modal";
+import LoadingDialog from "../../../../components/loading-dialog/loading-dialog";
 
 const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
   const directoryOrders = Array.from(Array(10), (_, i) => i + 1);
@@ -55,6 +56,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
     setPersonalDetailToUpdate(null);
     setDirectoryToDelete(null);
     setDirectoryValidate(initDirectoryValidate);
+    setCallingAPI(false);
   };
 
   //Update
@@ -69,6 +71,8 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
     priority: null,
   };
   const [personalDetail, setPersonalDetail] = useState(initDirectory);
+
+  const [callingAPI, setCallingAPI] = useState(false);
 
   useEffect(() => {
     dispatch(getVillageFundDirectory());
@@ -137,6 +141,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
   const onClickSaveButton = async () => {
     const directortyInvalid = getAndUpdateDirectoryValidate();
     if (!directortyInvalid) {
+      setCallingAPI(true);
       if (personalDetailToUpdate) {
         await updateDirectory();
       } else {
@@ -173,6 +178,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
         await updateDirectoryById(personalDetail);
       }
     } catch (error) {
+      setCallingAPI(false);
       alert("ไม่สามารถแก้ไขข้อมูลสมาชิกได้, กรุณาลองอีกครั้ง");
       deleteImageUploaded(imagesUploadedToDelete);
     }
@@ -195,6 +201,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
         deleteImageUploaded(imagesUploadedToDelete);
       });
     } catch {
+      setCallingAPI(false);
       alert("ไม่สามารถเพิ่มสมาชิกได้, กรุณาลองอีกครั้ง");
       deleteImageUploaded(imagesUploadedToDelete);
     }
@@ -202,6 +209,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
 
   const handleConfirmDelete = async () => {
     setConfirmModalOpen(false);
+    setCallingAPI(true);
     try {
       const imageProfilePath = getImageFullPathFromUrl(
         directoryToDelete.imageProfile,
@@ -211,7 +219,10 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
       await deleteDirectoryById(directoryToDelete.id);
       setInitData();
       dispatch(getVillageFundDirectory());
-    } catch {}
+    } catch {
+      setCallingAPI(false);
+      alert("ไม่สามารถลบสมาชิกนี้ได้ กรุณาลองใหม่อีกครั้ง");
+    }
   };
 
   return (
@@ -378,6 +389,7 @@ const VillageFundDirectory = ({ dispatch, directories, isLoading }) => {
           ]}
         ></ConfirmModal>
       ) : null}
+      <LoadingDialog open={callingAPI}></LoadingDialog>
     </>
   );
 };

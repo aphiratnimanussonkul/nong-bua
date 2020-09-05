@@ -155,3 +155,7 @@ textarea.text-area-error::placeholder {
 ul.image-select-error {
   border-color: red !important;
 }
+
+div.MuiCircularProgress-root {
+  color: var(--green-lemon-second);
+}

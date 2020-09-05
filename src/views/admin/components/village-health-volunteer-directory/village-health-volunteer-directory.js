@@ -35,6 +35,7 @@ import {
 } from "../../../../actions/upload-image";
 import ConfirmModal from "../../../../components/confirm-modal/confirm-modal";
 import Loading from "../../../../components/loading/loading";
+import LoadingDialog from "../../../../components/loading-dialog/loading-dialog";
 const VillageHealthVolunteerDirectory = ({
   dispatch,
   directories,
@@ -56,6 +57,7 @@ const VillageHealthVolunteerDirectory = ({
     setPersonalDetailToUpdate(null);
     setDirectoryToDelete(null);
     setDirectoryValidate(initDirectoryValidate);
+    setCallingAPI(false);
   };
 
   //Update
@@ -81,6 +83,8 @@ const VillageHealthVolunteerDirectory = ({
   const [directoryValidate, setDirectoryValidate] = useState(
     initDirectoryValidate
   );
+
+  const [callingAPI, setCallingAPI] = useState(false);
 
   useEffect(() => {
     dispatch(getVillageHealthVolunteerDirectory());
@@ -139,6 +143,7 @@ const VillageHealthVolunteerDirectory = ({
   const onClickSaveButton = async () => {
     const directortyInvalid = getAndUpdateDirectoryValidate();
     if (!directortyInvalid) {
+      setCallingAPI(true);
       if (personalDetailToUpdate) {
         await updateDirectory();
       } else {
@@ -175,6 +180,7 @@ const VillageHealthVolunteerDirectory = ({
         await updateVillageHealthVolunteer(personalDetail);
       }
     } catch (error) {
+      setCallingAPI(false);
       alert("ไม่สามารถแก้ไขข้อมูลสมาชิกได้, กรุณาลองอีกครั้ง");
       deleteImageUploaded(imagesUploadedToDelete);
     }
@@ -197,6 +203,7 @@ const VillageHealthVolunteerDirectory = ({
         deleteImageUploaded(imagesUploadedToDelete);
       });
     } catch {
+      setCallingAPI(false);
       alert("ไม่สามารถเพิ่มสมาชิกได้, กรุณาลองอีกครั้ง");
       deleteImageUploaded(imagesUploadedToDelete);
     }
@@ -204,6 +211,7 @@ const VillageHealthVolunteerDirectory = ({
 
   const handleConfirmDelete = async () => {
     setConfirmModalOpen(false);
+    setCallingAPI(true);
     try {
       const imageProfilePath = getImageFullPathFromUrl(
         directoryToDelete.imageProfile,
@@ -213,7 +221,10 @@ const VillageHealthVolunteerDirectory = ({
       await deleteVillageHealthVolunteerById(directoryToDelete.id);
       setInitData();
       dispatch(getVillageHealthVolunteerDirectory());
-    } catch {}
+    } catch {
+      setCallingAPI(false);
+      alert("ไม่สามารถลบสมาชิกนี้ได้ กรุณาลองใหม่อีกครั้ง");
+    }
   };
   return (
     <>
@@ -381,6 +392,7 @@ const VillageHealthVolunteerDirectory = ({
           ]}
         ></ConfirmModal>
       ) : null}
+      <LoadingDialog open={callingAPI}></LoadingDialog>
     </>
   );
 };

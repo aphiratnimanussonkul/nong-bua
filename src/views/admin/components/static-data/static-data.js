@@ -33,6 +33,7 @@ import {
 import Loading from "../../../../components/loading/loading";
 import ConfirmModal from "../../../../components/confirm-modal/confirm-modal";
 import { connect } from "react-redux";
+import LoadingDialog from "../../../../components/loading-dialog/loading-dialog";
 
 const StaticData = ({ dispatch, villageStatics, isLoading }) => {
   const headers = [
@@ -58,6 +59,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
     setVillageStaticToDelete(null);
     setVillageStaticToUpdate(null);
     setDirectoryValidate(initVillageStaticValidate);
+    setCallingAPI(false);
   };
 
   //Update
@@ -72,6 +74,8 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
     iconUrl: null,
   };
   const [villageStatic, setVillageStatic] = useState(initVillageStatic);
+
+  const [callingAPI, setCallingAPI] = useState(false);
 
   useEffect(() => {
     dispatch(getVillageStatic());
@@ -128,6 +132,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
   const onClickSaveButton = async () => {
     const villageStaticInvalid = getAndUpdateVillageStaticValidate();
     if (!villageStaticInvalid) {
+      setCallingAPI(true);
       if (villageStaticToUpdate) {
         await updateVillageStatic();
       } else {
@@ -161,7 +166,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
         await updateVillageStaticById(villageStatic);
       }
     } catch (error) {
-      console.log(error);
+      setCallingAPI(false);
       alert("ไม่สามารถแก้ไขข้อมูลทางสถิติของหมู่บ้านได้, กรุณาลองอีกครั้ง");
       deleteImageUploaded(imagesUploadedToDelete);
     }
@@ -193,6 +198,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
         });
       }
     } catch {
+      setCallingAPI(false);
       alert("ไม่สามารถเพิ่มข้อมูลทางสถิติของหมู่บ้านได้, กรุณาลองอีกครั้ง");
       deleteImageUploaded(imagesUploadedToDelete);
     }
@@ -200,6 +206,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
 
   const handleConfirmDelete = async () => {
     setConfirmModalOpen(false);
+    setCallingAPI(true);
     try {
       const imageProfilePath = getImageFullPathFromUrl(
         villageStaticToDelete.iconUrl,
@@ -211,6 +218,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
       setInitData();
       dispatch(getVillageStatic());
     } catch {
+      setCallingAPI(false);
       alert("ไม่สามารถลบข้อมูลนี้ได้ กรุณาลองใหม่อีกครั้ง");
     }
   };
@@ -399,6 +407,7 @@ const StaticData = ({ dispatch, villageStatics, isLoading }) => {
           ]}
         ></ConfirmModal>
       ) : null}
+      <LoadingDialog open={callingAPI}></LoadingDialog>
     </>
   );
 };
