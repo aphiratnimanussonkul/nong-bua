@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
-
+import MetaTags from 'react-meta-tags';
 import Carousel from "react-material-ui-carousel";
 import { CardMedia, Chip, Typography, GridList } from "@material-ui/core";
 import NewsCard from "../../../../components/news/components/news-card/news-card";
@@ -27,6 +27,11 @@ const ReadNews = ({ dispatch, news, newsRelate, newsId }) => {
 
   return (
     <div className="read-news">
+      <MetaTags>
+        <meta name="description" content={news?.description} />
+        <meta property="og:title" content={news?.title} />
+        <meta property="og:image" content={news?.images[0]} />
+      </MetaTags>
       <div className="content">
         <div className="news-detail">
           <h2 className="toppick">{news?.title}</h2>

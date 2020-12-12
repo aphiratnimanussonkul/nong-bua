@@ -1,4 +1,7 @@
 div.read-news {
+  div.news-detail > h2.toppick {
+    margin-bottom: 16px;
+  }
   div.news-detail {
     padding-bottom: 16px;
     border-bottom: 2px solid var(--light-gray);
@@ -31,6 +34,6 @@ div.read-news {
     }
   }
   div.more-news-relate {
-      margin-top: 16px;
+    margin-top: 16px;
   }
 }
